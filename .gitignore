@@ -1,0 +1,11 @@
+.DS_Store
+.htaccess
+/app/Config/
+/app/tmp/
+/app/Plugin/
+/app/Test/
+/app/Vendor/
+/lib/
+/plugins/
+/vendors/
+/index.php
