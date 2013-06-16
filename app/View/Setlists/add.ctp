@@ -6,8 +6,9 @@
 			'type' => 'string'
 			)
 		));
-	echo $this->Form->input('name', array('label' => "Setlist name"));
-	echo $this->Form->input('author', array('label' => "Author"));
+	echo $this->Form->input('name', array('label' => 'Setlist name'));
+	echo $this->Form->input('author', array('label' => 'Author'));
+	echo $this->Form->input('genre', array('label' => 'Genre'));
 ?>
 <table>
 	<tr>

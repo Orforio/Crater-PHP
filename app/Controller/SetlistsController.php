@@ -1,6 +1,6 @@
 <?php
 class SetlistsController extends AppController {
-	public $helpers = array('Html', 'Form', 'Session');
+	public $helpers = array('Html', 'Form', 'Session', 'Time');
     public $components = array('Session', 'DebugKit.Toolbar');
     public $uses = array('Setlist', 'Track');
 	

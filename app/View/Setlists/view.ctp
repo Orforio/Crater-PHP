@@ -2,7 +2,7 @@
 
 <p>Author: <?php echo h($setlist['Setlist']['author']); ?></p>
 
-<p>Modified: <?php echo $setlist['Setlist']['modified']; ?></p>
+<p>Modified: <?php echo $this->Time->niceShort($setlist['Setlist']['modified']); ?></p>
 
 <table>
 	<tr>
@@ -19,7 +19,7 @@
 		<td><?php echo h($track['Track']['setlist_order']); ?></td>
 		<td><?php echo h($track['Track']['artist']) . " - " . h($track['Track']['title']); ?></td>
 		<td><?php echo h($track['Track']['label']); ?></td>
-		<td><?php echo h($track['Track']['length']); ?></td>
+		<td><?php if ($track['Track']['length']) { echo $this->Time->format('i:s', $track['Track']['length']); } ?></td>
 		<td><?php echo h($track['Track']['bpm_start']); ?></td>
 		<td><?php echo h($track['Track']['key_start']); ?></td>
 		<td><?php echo h($track['Track']['key_code_start']); ?></td>
