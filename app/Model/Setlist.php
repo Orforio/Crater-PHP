@@ -2,7 +2,8 @@
 class Setlist extends AppModel {
 	public $hasMany = array(
 		'Track' => array(
-			'dependent' => true
+			'dependent' => true,
+			'order' => array('Track.setlist_order ASC'),
 			)
 		);
 	public $validate = array(
