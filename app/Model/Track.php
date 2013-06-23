@@ -169,13 +169,22 @@ class Track extends AppModel {
 		}
 	}
 	
-	public function beforeSave($options = array()) {
-		if ($this->data['Track']['length']) {
+	public function beforeSave($options = array()) {	// Turns 00:00 user input into 00:00:00 for database
+		if ($this->data['Track']['length'] && (strlen($this->data['Track']['length']) != 8)) {
 			$this->data['Track']['length'] = '00:' . $this->data['Track']['length'];
 			$this->data['Track']['length'] = date('H:i:s', strtotime($this->data['Track']['length']));
 		}
 		
 		return true;
+	}
+	
+	public function afterFind($results, $primary = false) {	// Turns database 00:00:00 into 00:00 for user input
+		foreach ($results as $i => $result) {
+			if ($result['Track']['length']) {
+				$results[$i]['Track']['length'] = date('i:s', strtotime($result['Track']['length']));
+			}
+		}
+		return $results;
 	}
 }
 ?>
