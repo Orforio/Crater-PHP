@@ -1,7 +1,7 @@
 <?php
 class SetlistsController extends AppController {
-	public $helpers = array('Html', 'Form', 'Session', 'Time');
-    public $components = array('Session', 'DebugKit.Toolbar');
+	public $helpers = array('Html', 'Form', 'Session', 'Time', 'Js' => array('Jquery'));
+    public $components = array('Session', 'Security', 'DebugKit.Toolbar');
     public $uses = array('Setlist', 'Track');
 	
 	public function index() {
@@ -21,7 +21,8 @@ class SetlistsController extends AppController {
         $this->set('setlist', $setlist);
         
 		$tracks = $this->Track->find('all', array(
-        	'conditions' => array('Track.setlist_id' => $id)
+        	'conditions' => array('Track.setlist_id' => $id),
+        	'order' => array('Track.setlist_order ASC')
 		));
 		
 		if (!$tracks) {
@@ -42,7 +43,7 @@ class SetlistsController extends AppController {
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash('Unable to add your setlist.');
-//                debug($this->Setlist->validationErrors);
+                debug($this->Setlist->validationErrors);
             }
         }
     }
@@ -58,7 +59,8 @@ class SetlistsController extends AppController {
 	    }
 	    
 	    $tracks = $this->Track->find('all', array(
-        	'conditions' => array('Track.setlist_id' => $id)
+        	'conditions' => array('Track.setlist_id' => $id),
+        	'order' => array('Track.setlist_order ASC')
 		));
 		
 		if (!$tracks) {
@@ -72,7 +74,7 @@ class SetlistsController extends AppController {
 	            $this->Session->setFlash('Your setlist has been updated.');
 	            $this->redirect(array('action' => 'index'));
 	        } else {
-	            $this->Session->setFlash('Unable to update your setlist.');
+	            $this->Session->setFlash('Unable to update your setlist.', 'default', array('class' => 'alert alert-error', 'data-dismiss' => 'alert'));
 	        }
 	    }
 	
