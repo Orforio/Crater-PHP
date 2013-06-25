@@ -1,41 +1,81 @@
-<h1>Add Setlist</h1>
+<h2>Add Setlist</h2>
 <?php
 	echo $this->Form->create('Setlist', array(
 		'inputDefaults' => array(
 			'label' => false,
-			'type' => 'string'
+			'type' => 'text',
+			'div' => false,
+			'error' => array(
+				'attributes' => array(
+					'class' => 'alert alert-error'))
 			)
 		));
-	echo $this->Form->input('name', array('label' => 'Setlist name'));
-	echo $this->Form->input('author', array('label' => 'Author'));
-	echo $this->Form->input('genre', array('label' => 'Genre'));
 ?>
-<table>
+<table class="table table-bordered">
 	<tr>
-		<th>#</th>
-		<th>Artist</th>
-		<th>Title</th>
-		<th>Label</th>
-		<th>Length</th>
-		<th>BPM</th>
-		<th>Key</th>
+		<td><?php echo $this->Form->input('name', array('label' => 'Name')); ?></td>
 	</tr>
+	<tr>
+		<td><?php echo $this->Form->input('author', array('label' => 'Author')); ?></td>
+	</tr>
+	<tr>
+		<td><?php echo $this->Form->input('genre', array('label' => 'Genre')); ?></td>
+	</tr>
+</table>
+
+<table class="table table-striped table-bordered table-condensed" id="editForm">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>Artist</th>
+			<th>Title</th>
+			<th>Label</th>
+			<th>Length</th>
+			<th>BPM</th>
+			<th>Key</th>
+		</tr>
+	</thead>
+	<tbody>
 <?php
 	for ($i = 0; $i < 15; $i++):
 ?>
-	<tr>
-		<td><?php echo $this->Form->input('Track.' . $i . '.setlist_order', array('size' => '3', 'readonly' => true, 'default' => $i + 1)); ?></td>
-		<td><?php echo $this->Form->input('Track.' . $i . '.artist'); ?></td>
-		<td><?php echo $this->Form->input('Track.' . $i . '.title'); ?></td>
-		<td><?php echo $this->Form->input('Track.' . $i . '.label'); ?></td>
-		<td><?php echo $this->Form->input('Track.' . $i . '.length'); ?></td>
-		<td><?php echo $this->Form->input('Track.' . $i . '.bpm_start'); ?></td>
-		<td><?php echo $this->Form->input('Track.' . $i . '.key_start'); ?></td>
-	</tr>
+		<tr>
+<?php
+		echo $this->Form->input('Track.' . $i . '.setlist_order', array('type' => 'hidden', 'value' => $i + 1));
+		$this->Form->unlockField('Track.' . $i . '.setlist_order');
+?>
+			<td class="draggable"><i class="icon-resize-vertical"></i><label class="setlist_order"> <?php echo $i + 1; ?></label></td>
+			<td><?php echo $this->Form->input('Track.' . $i . '.artist', array('placeholder' => 'Artist')); ?></td>
+			<td><?php echo $this->Form->input('Track.' . $i . '.title', array('placeholder' => 'Title')); ?></td>
+			<td><?php echo $this->Form->input('Track.' . $i . '.label', array('class' => 'input-small', 'placeholder' => 'Label')); ?></td>
+			<td><?php echo $this->Form->input('Track.' . $i . '.length', array('class' => 'input-mini', 'placeholder' => '00:00')); ?></td>
+			<td><?php echo $this->Form->input('Track.' . $i . '.bpm_start', array('class' => 'input-mini', 'placeholder' => 'BPM')); ?></td>
+			<td><?php echo $this->Form->input('Track.' . $i . '.key_start', array('class' => 'input-mini', 'placeholder' => 'Key')); ?></td>
+		</tr>
 <?php
 	endfor;
 ?>
+	</tbody>
 </table>
+<div class="form-actions">
+<?php echo $this->Form->end(array(
+	'label' => 'Add Setlist',
+	'class' => 'btn btn-primary'
+	));
+?>
+</div>
 <?php
-	echo $this->Form->end('Save Setlist');
+    $this->Js->get('#editForm tbody');
+	$this->Js->sortable(array(
+	    'distance' => 5,
+	    'containment' => 'parent',
+	    'handle' => '.draggable',
+	    'axis' => 'y',
+	    'cursor' => 'move',
+	    'delay' => 150,
+	    'revert' => false,
+	    'items' => '> tr',
+	    'update' => 'onSortableUpdate(event, ui)',
+	    'cursorAt' => array('top' => 20)
+	));
 ?>
