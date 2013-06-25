@@ -43,7 +43,7 @@ class SetlistsController extends AppController {
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash('Unable to add your setlist.');
-                debug($this->Setlist->validationErrors);
+//                debug($this->Setlist->validationErrors);
             }
         }
     }
@@ -71,10 +71,10 @@ class SetlistsController extends AppController {
 	    if ($this->request->is('post') || $this->request->is('put')) {
 	        $this->Setlist->id = $id;
 	        if ($this->Setlist->saveAssociated($this->request->data)) {
-	            $this->Session->setFlash('Your setlist has been updated.');
+	            $this->Session->setFlash('Your setlist has been updated.', 'default', array('class' => 'alert alert-success', 'options' => array('data-dismiss' => 'alert')));
 	            $this->redirect(array('action' => 'index'));
 	        } else {
-	            $this->Session->setFlash('Unable to update your setlist.', 'default', array('class' => 'alert alert-error', 'data-dismiss' => 'alert'));
+	            $this->Session->setFlash('Unable to update your setlist.', 'default', array('class' => 'alert alert-error', 'params' => array('data-dismiss' => 'alert')));
 	        }
 	    }
 	
@@ -103,6 +103,10 @@ class SetlistsController extends AppController {
 			}
 		}
 		return $strippedData;
+	}
+	
+	public function beforeFilter(){
+    	$this->Security->unlockedFields = array('Track.setlist_order', 'Track.artist', 'Track.title', 'Track.label', 'Track.length', 'Track.bpm_start', 'Track.key_start');
 	}
 }
 ?>
