@@ -42,7 +42,6 @@
 		<tr>
 <?php
 		echo $this->Form->input('Track.' . $i . '.setlist_order', array('type' => 'hidden', 'value' => $i + 1));
-		$this->Form->unlockField('Track.' . $i . '.setlist_order');
 ?>
 			<td class="draggable"><i class="icon-resize-vertical"></i><label class="setlist_order"> <?php echo $i + 1; ?></label></td>
 			<td><?php echo $this->Form->input('Track.' . $i . '.artist', array('placeholder' => 'Artist')); ?></td>
@@ -58,6 +57,7 @@
 	</tbody>
 </table>
 <div class="form-actions">
+	<p><?php echo $this->Form->button('Add row', array('type' => 'button', 'id' => 'addRowButton', 'class' => 'btn btn-mini btn-success')) . "&nbsp;" . $this->Form->button('Remove row', array('type' => 'button', 'id' => 'removeRowButton', 'class' => 'btn btn-mini btn-danger')); ?></p>
 <?php echo $this->Form->end(array(
 	'label' => 'Add Setlist',
 	'class' => 'btn btn-primary'
@@ -65,8 +65,7 @@
 ?>
 </div>
 <?php
-    $this->Js->get('#editForm tbody');
-	$this->Js->sortable(array(
+    $this->Js->get('#editForm tbody')->sortable(array(
 	    'distance' => 5,
 	    'containment' => 'parent',
 	    'handle' => '.draggable',
@@ -78,4 +77,7 @@
 	    'update' => 'onSortableUpdate(event, ui)',
 	    'cursorAt' => array('top' => 20)
 	));
+	
+	$this->Js->get('#addRowButton')->event('click', 'addTrackRow()');
+	$this->Js->get('#removeRowButton')->event('click', 'removeTrackRow()');
 ?>
