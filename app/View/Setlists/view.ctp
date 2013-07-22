@@ -20,8 +20,8 @@
 			<th>Label</th>
 			<th>Length</th>
 			<th>BPM</th>
-			<th>Key</th>
 			<th>Key Code</th>
+			<th>Key</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -33,7 +33,7 @@
 			<td><?php echo h($track['Track']['length']); ?></td>
 			<td><?php echo h($track['Track']['bpm_start']); ?></td>
 			<td><?php echo h($track['Track']['key_start']); ?></td>
-			<td><?php echo h($track['Track']['key_code_start']); ?></td>
+			<td><?php echo h($track['Track']['key_notation_start']); ?></td>
 		</tr>
 <?php endforeach; ?>
 	</tbody>
