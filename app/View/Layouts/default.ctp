@@ -29,7 +29,7 @@
 	<?php
 		echo $this->Html->meta('icon');
 		echo $this->Html->meta(array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0'));
-		echo $this->Html->css(array(/*'cake.generic', */'bootstrap', 'ui-lightness/jquery-ui'), null, array('media' => 'screen'));
+		echo $this->Html->css(array(/*'cake.generic', */'bootstrap'/*, 'ui-lightness/jquery-ui'*/), null, array('media' => 'screen'));
 		echo $this->Html->script(array('jquery', 'jquery-ui', 'bootstrap', 'crater'));
 
 		echo $this->fetch('meta');
@@ -49,7 +49,7 @@
 			<?php echo $this->fetch('content'); ?>
 		</div>
 		<div class="span12" id="footer">
-			<p>DEVELOPMENT VERSION - MySQL Dump Follows</p>
+			<p>DEVELOPMENT VERSION</p>
 		</div>
 	</div>
 	<?php echo $this->element('sql_dump'); 
