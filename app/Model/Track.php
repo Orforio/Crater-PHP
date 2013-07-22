@@ -64,19 +64,101 @@ class Track extends AppModel {
 			)
 		),
 		'key_start' => array(
-			'rule' => array('inList', array('Abm', 'B', 'Ebm', 'F#', 'Gb', 'Bbm', 'Db', 'Fm', 'Ab', 'G#', 'Cm', 'Eb', 'Gm', 'Bb', 'Dm', 'F', 'Am', 'C', 'Em', 'G', 'Bm', 'D', 'F#m', 'Gbm', 'A', 'Dbm', 'E')),
+			'rule' => array('custom', '/(^([1-9]|1[0-2])[abAB]$)|(^[a-gA-G][#b]?[m]?$)/'),	// Captures either Camelot code or key signature
 			'required' => true,
 			'allowEmpty' => true,
-			'message' => 'Please provide a valid key. Use # for sharp, b for flat and m for minor.'
+			'message' => 'Please provide a valid key in either Key notation (eg F#, Bbm) or Camelot code (eg 7A, 12B).'
 		),
 		'key_end' => array(
-			'rule' => array('inList', array('Abm', 'B', 'Ebm', 'F#', 'Gb', 'Bbm', 'Db', 'Fm', 'Ab', 'G#', 'Cm', 'Eb', 'Gm', 'Bb', 'Dm', 'F', 'Am', 'C', 'Em', 'G', 'Bm', 'D', 'F#m', 'Gbm', 'A', 'Dbm', 'E')),
+			'rule' => array('custom', '/(^([1-9]|1[0-2])[abAB]$)|(^[a-gA-G][#b]?[m]?$)/'),	// Captures either Camelot code or key signature
 			'required' => false,
 			'allowEmpty' => true,
-			'message' => 'Please provide a valid key. Use # for sharp, b for flat and m for minor.'
+			'message' => 'Please provide a valid key in either Key notation (eg F#, Bbm) or Camelot code (eg 7A, 12B).'
 		)
 	);
-	private $validKeys = array('Abm', 'B', 'Ebm', 'F#', 'Gb', 'Bbm', 'Db', 'Fm', 'Ab', 'G#', 'Cm', 'Eb', 'Gm', 'Bb', 'Dm', 'F', 'Am', 'C', 'Em', 'G', 'Bm', 'D', 'F#m', 'Gbm', 'A', 'Dbm', 'E');	// TODO: try and integrate this into getKeyCode below
+//	private $validKeys = array('Abm', 'B', 'Ebm', 'F#', 'Gb', 'Bbm', 'Db', 'Fm', 'Ab', 'G#', 'Cm', 'Eb', 'Gm', 'Bb', 'Dm', 'F', 'Am', 'C', 'Em', 'G', 'Bm', 'D', 'F#m', 'Gbm', 'A', 'Dbm', 'E');	// TODO: try and integrate this into getKeyCode below
+
+		public function getKeyNotation($key) {	// Returns a key notation to display according to user preference
+		switch ($key) {
+			case "1A":
+				return "A♭";
+				break;
+			case "1B":
+				return "B";
+				break;
+			case "2A":
+				return "E♭m";
+				break;
+			case "2B":
+				return "F♯";
+				break;
+			case "3A":
+				return "B♭m";
+				break;
+			case "3B":
+				return "D♭";
+				break;
+			case "4A":
+				return "Fm";
+				break;
+			case "4B":
+				return "A♭";
+				break;
+			case "5A":
+				return "Cm";
+				break;
+			case "5B";
+				return "E♭";
+				break;
+			case "6A":
+				return "Gm";
+				break;
+			case "6B":
+				return "B♭";
+				break;
+			case "7A":
+				return "Dm";
+				break;
+			case "7B":
+				return "F";
+				break;
+			case "8A":
+				return "Am";
+				break;
+			case "8B":
+				return "C";
+				break;
+			case "9A":
+				return "Em";
+				break;
+			case "9B":
+				return "G";
+				break;
+			case "10A":
+				return "Bm";
+				break;
+			case "10B":
+				return "D";
+				break;
+			case "11A":
+				return "F♯m";
+				break;
+			case "11B":
+				return "A";
+				break;
+			case "12A":
+				return "D♭m";
+				break;
+			case "12B":
+				return "E";
+				break;
+			case "":
+				return null;
+				break;
+			default:
+				throw new BadRequestException(__('getKeyNotation: Invalid key'));
+		}
+	}
 	
 	public function getKeyCode($key) {	// Returns a Camelot Key Code for each given key
 		switch ($key) {
@@ -162,7 +244,7 @@ class Track extends AppModel {
 				return "12B";
 				break;
 			case "":
-				return null;
+				return "";
 				break;
 			default:
 				throw new BadRequestException(__('Invalid key'));
@@ -173,6 +255,10 @@ class Track extends AppModel {
 		if ($this->data['Track']['length'] && (strlen($this->data['Track']['length']) != 8)) {
 			$this->data['Track']['length'] = '00:' . $this->data['Track']['length'];
 			$this->data['Track']['length'] = date('H:i:s', strtotime($this->data['Track']['length']));
+		}
+		
+		if (!is_numeric(substr($this->data['Track']['key_start'], 0, 1))) {	// If first character of Key isn't numeric, we need to convert from key notation to a Camelot key code
+			$this->data['Track']['key_start'] = $this->getKeyCode($this->data['Track']['key_start']);
 		}
 		
 		return true;
