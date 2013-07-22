@@ -29,8 +29,9 @@ class SetlistsController extends AppController {
 			throw new NotFoundException(__('No tracks found for requested setlist'));
 		}
 		
-		foreach ($tracks as $i => $track) {	// Appends each key's keycode to the data array
-			$tracks[$i]['Track']['key_code_start'] = $this->Track->getKeyCode($track['Track']['key_start']);
+		foreach ($tracks as $i => $track) {	// Appends each key's notational form to the data array
+			$tracks[$i]['Track']['key_notation_start'] = $this->Track->getKeyNotation($track['Track']['key_start']);
+		//	$tracks[$i]['Track']['key_code_start'] = $this->Track->getKeyCode($track['Track']['key_start']);
 		}
 		$this->set('tracks', $tracks);
     }
