@@ -1,9 +1,6 @@
 function onSortableUpdate(event, ui) {
-	var newTrackOrder = $('#editForm tbody').sortable('toArray', {attribute: 'data-trackorder'});	// TODO: remove
-	console.debug(newTrackOrder);
-	
 	$('#editForm tbody tr').each(function(currentTrackIndex) {
-		updateSort(currentTrackIndex, newTrackOrder, this);
+		updateSort(currentTrackIndex, this);
 	});
 	
 	
@@ -24,7 +21,7 @@ function onSortableUpdate(event, ui) {
 //	}
 }
 
-function updateSort(currentTrackIndex, newTrackOrder, currentRow) {
+function updateSort(currentTrackIndex, currentRow) {
 	var currentTrackOrder = currentTrackIndex + 1;
 //	var newTrackOrderNumber = (jQuery.inArray(currentTrackOrder, newTrackOrder)) + 1;
 	$(currentRow).find('td .setlist_order').html(' ' + currentTrackOrder);
@@ -50,4 +47,12 @@ function addTrackRow() {
 
 function removeTrackRow() {
 	$('#editForm tbody tr:last').remove();
+}
+
+function sortableHelper(e, ui) {
+	ui.children().each(function() {
+        $(this).width($(this).width());
+ //       console.debug($(this).width($(this).width()));
+    });
+    return ui;
 }
