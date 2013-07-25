@@ -10,6 +10,9 @@
 	<tr>
 		<td><strong>Modified</strong>: <?php echo $this->Time->niceShort($setlist['Setlist']['modified']); ?></td>
 	</tr>
+	<tr>
+		<td><strong>URL Hash:</strong>: <?php echo h($setlist['Setlist']['urlhash']); ?></td>
+	</tr>
 </table>
 
 <table class="table table-striped table-bordered table-condensed">
