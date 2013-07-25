@@ -1,7 +1,7 @@
 <?php
 class SetlistsController extends AppController {
 	public $helpers = array('Html', 'Form', 'Session', 'Time', 'Js' => array('Jquery'));
-    public $components = array('Session', 'Security', 'DebugKit.Toolbar');
+    public $components = array('Session', 'Security', 'Urlhash', 'DebugKit.Toolbar');
     public $uses = array('Setlist', 'Track');
 	
 	public function index() {
@@ -18,6 +18,8 @@ class SetlistsController extends AppController {
         if (!$setlist) {
             throw new NotFoundException(__('Invalid setlist'));
         }
+        $setlist['Setlist']['urlhash'] = $this->Urlhash->encrypt($id);
+        
         $this->set('setlist', $setlist);
         
 		$tracks = $this->Track->find('all', array(
@@ -54,13 +56,13 @@ class SetlistsController extends AppController {
 	        throw new NotFoundException(__('Invalid setlist'));
 	    }
 	
-	    $setlist = $this->Setlist->findById($id);
+	    $setlist = $this->Setlist->findById($this->Urlhash->decrypt($id));
 	    if (!$setlist) {
 	        throw new NotFoundException(__('Invalid setlist'));
 	    }
 	    
 	    $tracks = $this->Track->find('all', array(
-        	'conditions' => array('Track.setlist_id' => $id),
+        	'conditions' => array('Track.setlist_id' => $this->Urlhash->decrypt($id)),
         	'order' => array('Track.setlist_order ASC')
 		));
 		
@@ -70,7 +72,7 @@ class SetlistsController extends AppController {
 		$this->set('tracks', $tracks);
 	
 	    if ($this->request->is('post') || $this->request->is('put')) {
-	        $this->Setlist->id = $id;
+	        $this->Setlist->id = $this->Urlhash->decrypt($id);
 	        if ($this->Setlist->saveAssociated($this->request->data)) {
 	            $this->Session->setFlash('Your setlist has been updated.', 'default', array('class' => 'alert alert-success', 'options' => array('data-dismiss' => 'alert')));
 	            $this->redirect(array('action' => 'index'));
