@@ -22,6 +22,9 @@
 	<tr>
 		<td><?php echo $this->Form->input('genre', array('label' => 'Genre')); ?></td>
 	</tr>
+	<tr>
+		<td><?php echo $this->Form->input('master_bpm', array('label' => 'Master BPM', 'class' => 'input-mini')); ?></td>
+	</tr>
 </table>
 
 <table class="table table-striped table-bordered table-condensed" id="editForm">

@@ -11,7 +11,10 @@
 		<td><strong>Modified</strong>: <?php echo $this->Time->niceShort($setlist['Setlist']['modified']); ?></td>
 	</tr>
 	<tr>
-		<td><strong>URL Hash:</strong>: <?php echo h($setlist['Setlist']['urlhash']); ?></td>
+		<td><strong>Master BPM</strong>: <?php echo h($setlist['Setlist']['master_bpm']); ?></td>
+	</tr>
+	<tr>
+		<td><strong>URL Hash</strong>: <?php echo h($setlist['Setlist']['urlhash']); ?></td>
 	</tr>
 </table>
 

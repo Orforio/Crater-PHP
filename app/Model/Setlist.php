@@ -30,7 +30,20 @@ class Setlist extends AppModel {
         		'rule' => array('maxLength', 255),
         		'message' => 'Please keep your genre name under 255 characters.'
         	)
-        )//,
+        ),
+        'master_bpm' => array(
+        	'master_bpm_start_rule1' => array(
+				'rule' => 'numeric',
+				'required' => true,
+				'allowEmpty' => true,
+				'message' => 'Please input a number for the Master BPM.'
+			),
+			'master_bpm_start_rule2' => array(
+				'rule' => array('maxLength', 3),
+				'message' => 'Please input a 3-digit BPM.'
+			)
+		)
+        //,
 /*        'modified' => array(	// Not present in HTTP Request
         	'rule' => 
         ),*/
