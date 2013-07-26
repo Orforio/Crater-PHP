@@ -2,23 +2,33 @@
 App::import('Vendor', 'Hashids');
 
 class UrlhashComponent extends Component {
-	private $_securitysalt;
+	protected $_securitysalt;
 	
 	function __construct() {
 		$this->_securitysalt = Configure::read('Security.salt');
 	}
 	
-	public function encrypt($id) {
-		$hashids = new Hashids\Hashids($this->_securitysalt);
+	public function encrypt($id = null) {
+		if (!$id || !is_numeric($id)) {
+			return '';
+		}
+		else {
+			$hashids = new Hashids\Hashids($this->_securitysalt);
 		
-		return $hashids->encrypt(intval($id));
+			return $hashids->encrypt(intval($id));
+		}
 	}
 	
-	public function decrypt($hash) {
+	public function decrypt($hash = null) {
 		$hashids = new Hashids\Hashids($this->_securitysalt);
 		
 		$decryptedHash = $hashids->decrypt($hash);
 		
-		return $decryptedHash[0];
+		if (array_key_exists(0, $decryptedHash)) {
+			return $decryptedHash[0];
+		}
+		else {
+			return '';	
+		}
 	}
 }
