@@ -52,5 +52,28 @@ class Setlist extends AppModel {
         'private_key' => array(
         )*/
     );
+    
+    public function calculateAverageBPM($data = null) {
+    	if (!$data) {
+	    	return 0;
+    	}
+    	
+    	$bpmTotal = 0;
+    	$numberTracks = 0;
+    	
+    	foreach ($data as $track) {
+	    	if ($track['Track']['bpm_start']) {
+		    	$numberTracks++;
+		    	$bpmTotal += $track['Track']['bpm_start'];
+	    	}
+    	}
+    	
+    	if ($numberTracks == 0) {
+	    	return 0;
+    	}
+    	
+    	return round($bpmTotal / $numberTracks);
+	    
+    }
 }
 ?>
