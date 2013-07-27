@@ -55,24 +55,30 @@ class SetlistsController extends AppController {
 	    if (!$id) {
 	        throw new NotFoundException(__('Invalid setlist'));
 	    }
+	    
+	    $decryptedID = $this->Urlhash->decrypt($id);
 	
-	    $setlist = $this->Setlist->findById($this->Urlhash->decrypt($id));
+	    $setlist = $this->Setlist->findById($decryptedID);
 	    if (!$setlist) {
 	        throw new NotFoundException(__('Invalid setlist'));
 	    }
 	    
 	    $tracks = $this->Track->find('all', array(
-        	'conditions' => array('Track.setlist_id' => $this->Urlhash->decrypt($id)),
+        	'conditions' => array('Track.setlist_id' => $decryptedID),
         	'order' => array('Track.setlist_order ASC')
 		));
 		
 		if (!$tracks) {
 			throw new NotFoundException(__('No tracks found for requested setlist'));
 		}
+		
+		$setlist['Setlist']['suggested_bpm'] = $this->Setlist->calculateAverageBPM($tracks);
+		
+		$this->set('setlist', $setlist);
 		$this->set('tracks', $tracks);
 	
 	    if ($this->request->is('post') || $this->request->is('put')) {
-	        $this->Setlist->id = $this->Urlhash->decrypt($id);
+	        $this->Setlist->id = $decryptedID;
 	        if ($this->Setlist->saveAssociated($this->request->data)) {
 	            $this->Session->setFlash('Your setlist has been updated.', 'default', array('class' => 'alert alert-success', 'options' => array('data-dismiss' => 'alert')));
 	            $this->redirect(array('action' => 'index'));

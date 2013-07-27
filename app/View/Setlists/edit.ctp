@@ -23,7 +23,7 @@
 		<td><?php echo $this->Form->input('genre', array('label' => 'Genre')); ?></td>
 	</tr>
 	<tr>
-		<td><?php echo $this->Form->input('master_bpm', array('label' => 'Master BPM', 'class' => 'input-mini')); ?></td>
+		<td><?php echo $this->Form->input('master_bpm', array('label' => 'Master BPM', 'class' => 'input-mini', 'placeholder' => $setlist['Setlist']['suggested_bpm'])); ?></td>
 	</tr>
 </table>
 
