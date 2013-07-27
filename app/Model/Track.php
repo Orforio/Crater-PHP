@@ -41,26 +41,26 @@ class Track extends AppModel {
 		),
 		'bpm_start' => array(
 			'bpm_start_rule1' => array(
-				'rule' => 'numeric',
+				'rule' => 'naturalNumber',
 				'required' => true,
 				'allowEmpty' => true,
-				'message' => 'Please input a number for the Start BPM.'
+				'message' => 'Please enter a BPM between 1 and 999.'
 			),
 			'bpm_start_rule2' => array(
 				'rule' => array('maxLength', 3),
-				'message' => 'Please input a 3-digit BPM.'
+				'message' => 'Please enter a BPM below 999.'
 			)
 		),
 		'bpm_end' => array(
 			'bpm_end_rule1' => array(
-				'rule' => 'numeric',
+				'rule' => 'naturalNumber',
 				'required' => false,
 				'allowEmpty' => true,
-				'message' => 'Please input a number for the End BPM.'
+				'message' => 'Please enter a BPM between 1 and 999.'
 			),
 			'bpm_end_rule2' => array(
 				'rule' => array('maxLength', 3),
-				'message' => 'Please input a 3-digit BPM.'
+				'message' => 'Please enter a BPM below 999.'
 			)
 		),
 		'key_start' => array(
