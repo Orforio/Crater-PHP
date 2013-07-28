@@ -33,8 +33,12 @@ class SetlistsController extends AppController {
 		
 		foreach ($tracks as $i => $track) {	// Appends each key's notational form to the data array
 			$tracks[$i]['Track']['key_notation_start'] = $this->Track->getKeyNotation($track['Track']['key_start']);
-		//	$tracks[$i]['Track']['key_code_start'] = $this->Track->getKeyCode($track['Track']['key_start']);
 		}
+		
+		if ($setlist['Setlist']['master_bpm']) {
+			$tracks = $this->Track->calculateBPMDifference($tracks, $setlist['Setlist']['master_bpm']);
+		}
+		
 		$this->set('tracks', $tracks);
     }
     
