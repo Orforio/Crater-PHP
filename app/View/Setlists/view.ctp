@@ -38,7 +38,7 @@
 			<td><?php echo h($track['Track']['label']); ?></td>
 			<td><?php echo h($track['Track']['length']); ?></td>
 			<td><?php echo h($track['Track']['bpm_start']);
-				if ($track['Setlist']['master_bpm'] && $track['Track']['bpm_difference']) { echo " (" . h($track['Track']['bpm_difference']) . ")"; } // TODO: Turn this into helper ?></td>
+				if ($track['Setlist']['master_bpm'] && $track['Track']['bpm_difference']) { echo $this->Track->displayBPM($track['Track']['bpm_difference']); } ?></td>
 			<td><?php echo h($track['Track']['key_start']); ?></td>
 			<td><?php echo h($track['Track']['key_notation_start']); ?></td>
 		</tr>
