@@ -2,6 +2,7 @@
 class Track extends AppModel {
 	public $belongsTo = 'Setlist';
 	public $helpers = array('Time');
+	public $recursive = -1;
 	public $validate = array(
 /*		'setlist_id' => array(	// Not present in HTTP Request
 			'rule' => 'naturalNumber',
@@ -279,16 +280,14 @@ class Track extends AppModel {
 		return $results;
 	}
 	
-	public function calculateBPMDifference($results, $masterBPM) {
-		foreach ($results as $i => $result) {
-			if ($result['Track']['bpm_start']) {
-				$results[$i]['Track']['bpm_difference'] = round((($result['Track']['bpm_start'] - $masterBPM) / $masterBPM) * 100, 2);
-			}
-			else {
-				$results[$i]['Track']['bpm_difference'] = false;
-			}
+	public function calculateBPMDifference($track, $masterBPM) {
+		if ($track['bpm_start']) {
+			$track['bpm_difference'] = round((($track['bpm_start'] - $masterBPM) / $masterBPM) * 100, 2);
 		}
-		return $results;
+		else {
+			$track['bpm_difference'] = null;
+		}
+		return $track;
 	}
 }
 ?>

@@ -13,15 +13,17 @@ class SetlistsController extends AppController {
             throw new NotFoundException(__('Invalid setlist'));
         }
 
-        $setlist = $this->Setlist->findById($id);
+        $setlist = $this->Setlist->find('first', array(
+        	'conditions' => array('Setlist.id' => $id),
+        	'recursive' => 1));
         
         if (!$setlist) {
             throw new NotFoundException(__('Invalid setlist'));
         }
+        
         $setlist['Setlist']['urlhash'] = $this->Urlhash->encrypt($id);
         
-        $this->set('setlist', $setlist);
-        
+        /*
 		$tracks = $this->Track->find('all', array(
         	'conditions' => array('Track.setlist_id' => $id),
         	'order' => array('Track.setlist_order ASC')
@@ -30,16 +32,20 @@ class SetlistsController extends AppController {
 		if (!$tracks) {
 			throw new NotFoundException(__('No tracks found for requested setlist'));
 		}
-		
-		foreach ($tracks as $i => $track) {	// Appends each key's notational form to the data array
-			$tracks[$i]['Track']['key_notation_start'] = $this->Track->getKeyNotation($track['Track']['key_start']);
+		*/
+		foreach ($setlist['Track'] as $i => $track) {	// Appends each key's notational form to the data array
+			$setlist['Track'][$i]['key_notation_start'] = $this->Track->getKeyNotation($track['key_start']);
 		}
 		
 		if ($setlist['Setlist']['master_bpm']) {
-			$tracks = $this->Track->calculateBPMDifference($tracks, $setlist['Setlist']['master_bpm']);
+			foreach ($setlist['Track'] as $i => $track) {
+				$setlist['Track'][$i] = $this->Track->calculateBPMDifference($track, $setlist['Setlist']['master_bpm']);
+			}
+			//$setlist = $this->Track->calculateBPMDifference($setlist, $setlist['Setlist']['master_bpm']);
 		}
 		
-		$this->set('tracks', $tracks);
+		$this->set('setlist', $setlist);
+		// $this->set('tracks', $tracks);
     }
     
     public function add() {	// Adds a new setlist
@@ -61,25 +67,29 @@ class SetlistsController extends AppController {
 	    }
 	    
 	    $decryptedID = $this->Urlhash->decrypt($id);
+	    
+	    $setlist = $this->Setlist->find('first', array(
+	    	'conditions' => array('Setlist.id' => $decryptedID),
+	    	'recursive' => 1));
 	
-	    $setlist = $this->Setlist->findById($decryptedID);
+//	    $setlist = $this->Setlist->findById($decryptedID);
 	    if (!$setlist) {
 	        throw new NotFoundException(__('Invalid setlist'));
 	    }
 	    
-	    $tracks = $this->Track->find('all', array(
+/*	    $tracks = $this->Track->find('all', array(
         	'conditions' => array('Track.setlist_id' => $decryptedID),
         	'order' => array('Track.setlist_order ASC')
-		));
+		)); */
 		
-		if (!$tracks) {
+/*		if (!$tracks) {
 			throw new NotFoundException(__('No tracks found for requested setlist'));
-		}
+		}	*/
 		
-		$setlist['Setlist']['suggested_bpm'] = $this->Setlist->calculateAverageBPM($tracks);
+		$setlist['Setlist']['suggested_bpm'] = $this->Setlist->calculateAverageBPM($setlist['Track']);
 		
 		$this->set('setlist', $setlist);
-		$this->set('tracks', $tracks);
+//		$this->set('tracks', $tracks);
 	
 	    if ($this->request->is('post') || $this->request->is('put')) {
 	        $this->Setlist->id = $decryptedID;
@@ -93,6 +103,7 @@ class SetlistsController extends AppController {
 	
 	    if (!$this->request->data) {
 	        $this->request->data = $setlist;
+	      //  $this->request->data['Track'] = $tracks;
 	    }
 	}
 	
@@ -110,15 +121,15 @@ class SetlistsController extends AppController {
 	protected function stripBlankPostData($data) {	// Ensures only form data with rows that have a title filled in are passed on to be saved
 		$strippedData['Setlist'] = $data['Setlist'];
 		
-		foreach ($data['Track'] as $key => $row) {
-			if ($row['title']) {
-				$strippedData['Track'][] = $data['Track'][$key];
+		foreach ($data['Track'] as $i => $track) {
+			if ($track['title']) {
+				$strippedData['Track'][] = $data['Track'][$i];
 			}
 		}
 		return $strippedData;
 	}
 	
-	public function beforeFilter(){
+	public function beforeFilter() {
     	$this->Security->unlockedFields = array('Track.setlist_order', 'Track.artist', 'Track.title', 'Track.label', 'Track.length', 'Track.bpm_start', 'Track.key_start');
 	}
 }

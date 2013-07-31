@@ -53,6 +53,8 @@ class Setlist extends AppModel {
         )*/
     );
     
+    public $recursive = -1;
+    
     public function calculateAverageBPM($data = null) {
     	if (!$data) {
 	    	return 0;
@@ -62,9 +64,9 @@ class Setlist extends AppModel {
     	$numberTracks = 0;
     	
     	foreach ($data as $track) {
-	    	if ($track['Track']['bpm_start']) {
+	    	if ($track['bpm_start']) {
 		    	$numberTracks++;
-		    	$bpmTotal += $track['Track']['bpm_start'];
+		    	$bpmTotal += $track['bpm_start'];
 	    	}
     	}
     	
@@ -72,8 +74,7 @@ class Setlist extends AppModel {
 	    	return 0;
     	}
     	
-    	return round($bpmTotal / $numberTracks);
-	    
+    	return round($bpmTotal / $numberTracks);  
     }
 }
 ?>

@@ -10,20 +10,20 @@
 					'class' => 'alert alert-error'))
 			)
 		));
-	echo $this->Form->input('id', array('type' => 'hidden'));
+	echo $this->Form->input('Setlist.id', array('type' => 'hidden'));
 ?>
 <table class="table table-bordered">
 	<tr>
-		<td><?php echo $this->Form->input('name', array('label' => 'Name')); ?></td>
+		<td><?php echo $this->Form->input('Setlist.name', array('label' => 'Name')); ?></td>
 	</tr>
 	<tr>
-		<td><?php echo $this->Form->input('author', array('label' => 'Author')); ?></td>
+		<td><?php echo $this->Form->input('Setlist.author', array('label' => 'Author')); ?></td>
 	</tr>
 	<tr>
-		<td><?php echo $this->Form->input('genre', array('label' => 'Genre')); ?></td>
+		<td><?php echo $this->Form->input('Setlist.genre', array('label' => 'Genre')); ?></td>
 	</tr>
 	<tr>
-		<td><?php echo $this->Form->input('master_bpm', array('label' => 'Master BPM', 'class' => 'input-mini', 'placeholder' => $setlist['Setlist']['suggested_bpm'])); ?></td>
+		<td><?php echo $this->Form->input('Setlist.master_bpm', array('label' => 'Master BPM', 'class' => 'input-mini', 'placeholder' => $setlist['Setlist']['suggested_bpm'])); ?></td>
 	</tr>
 </table>
 
@@ -41,7 +41,7 @@
 	</thead>
 	<tbody>
 <?php
-	foreach($tracks as $i => $track):
+	foreach($setlist['Track'] as $i => $track):
 ?>
 		<tr>
 <?php
@@ -49,7 +49,7 @@
 	echo $this->Form->input('Track.' . $i . '.setlist_order', array('type' => 'hidden'));
 	$this->Form->unlockField('Track.' . $i . '.setlist_order');
 ?>
-			<td class="draggable" style="white-space: nowrap;"><i class="icon-resize-vertical"></i><label class="setlist_order"> <?php echo h($track['Track']['setlist_order']); ?></label></td>
+			<td class="draggable" style="white-space: nowrap;"><i class="icon-resize-vertical"></i><label class="setlist_order"> <?php echo h($track['setlist_order']); ?></label></td>
 			<td><?php echo $this->Form->input('Track.' . $i . '.artist'); ?></td>
 			<td><?php echo $this->Form->input('Track.' . $i . '.title'); ?></td>
 			<td><?php echo $this->Form->input('Track.' . $i . '.label', array('class' => 'input-small')); ?></td>

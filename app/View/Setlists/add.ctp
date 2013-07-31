@@ -13,16 +13,16 @@
 ?>
 <table class="table table-bordered">
 	<tr>
-		<td><?php echo $this->Form->input('name', array('label' => 'Name')); ?></td>
+		<td><?php echo $this->Form->input('Setlist.name', array('label' => 'Name')); ?></td>
 	</tr>
 	<tr>
-		<td><?php echo $this->Form->input('author', array('label' => 'Author')); ?></td>
+		<td><?php echo $this->Form->input('Setlist.author', array('label' => 'Author')); ?></td>
 	</tr>
 	<tr>
-		<td><?php echo $this->Form->input('genre', array('label' => 'Genre')); ?></td>
+		<td><?php echo $this->Form->input('Setlist.genre', array('label' => 'Genre')); ?></td>
 	</tr>
 	<tr>
-		<td><?php echo $this->Form->input('master_bpm', array('label' => 'Master BPM', 'class' => 'input-mini')); ?></td>
+		<td><?php echo $this->Form->input('Setlist.master_bpm', array('label' => 'Master BPM', 'class' => 'input-mini')); ?></td>
 	</tr>
 </table>
 

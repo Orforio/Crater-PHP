@@ -14,7 +14,7 @@
 		<td><strong>Master BPM</strong>: <?php echo h($setlist['Setlist']['master_bpm']); ?></td>
 	</tr>
 	<tr>
-		<td><strong>URL Hash</strong>: <?php echo h($setlist['Setlist']['urlhash']); ?></td>
+		<td><strong>URL Hash (replaces ID)</strong>: <?php echo h($setlist['Setlist']['urlhash']); ?></td>
 	</tr>
 </table>
 
@@ -31,16 +31,16 @@
 		</tr>
 	</thead>
 	<tbody>
-<?php foreach ($tracks as $track): ?>
+<?php foreach ($setlist['Track'] as $track): ?>
 		<tr>
-			<td><?php echo h($track['Track']['setlist_order']); ?></td>
-			<td><?php echo h($track['Track']['artist']) . " - " . h($track['Track']['title']); ?></td>
-			<td><?php echo h($track['Track']['label']); ?></td>
-			<td><?php echo h($track['Track']['length']); ?></td>
-			<td><?php echo h($track['Track']['bpm_start']);
-				if ($track['Setlist']['master_bpm'] && $track['Track']['bpm_difference']) { echo $this->Track->displayBPM($track['Track']['bpm_difference']); } ?></td>
-			<td><?php echo h($track['Track']['key_start']); ?></td>
-			<td><?php echo h($track['Track']['key_notation_start']); ?></td>
+			<td><?php echo h($track['setlist_order']); ?></td>
+			<td><?php echo h($track['artist']) . " - " . h($track['title']); ?></td>
+			<td><?php echo h($track['label']); ?></td>
+			<td><?php echo h($track['length']); ?></td>
+			<td><?php echo h($track['bpm_start']);
+				if ($setlist['Setlist']['master_bpm'] && $track['bpm_difference']) { echo $this->Track->displayBPM($track['bpm_difference']); } ?></td>
+			<td><?php echo h($track['key_start']); ?></td>
+			<td><?php echo h($track['key_notation_start']); ?></td>
 		</tr>
 <?php endforeach; ?>
 	</tbody>
