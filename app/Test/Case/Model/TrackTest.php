@@ -32,5 +32,29 @@ class TrackTest extends CakeTestCase {
 		$this->assertEquals(0, $testTrackArray0['bpm_difference']);
 		$this->assertEquals(-5.56, $testTrackArray1['bpm_difference']);		
 	}
+	
+	public function testCalculateKeyDifference() {
+		$trackGroupE = $this->Setlist->find('first', array(
+			'conditions' => array('Setlist.id' => 5),
+			'recursive' => 1));
+			
+		debug($trackGroupE);
+		
+		$testTrackArray0 = $this->Track->calculateKeyDifference($trackGroupE['Track'][0]);
+		$testTrackArray1 = $this->Track->calculateKeyDifference($trackGroupE['Track'][1]);
+		$testTrackArray2 = $this->Track->calculateKeyDifference($trackGroupE['Track'][2]);
+		$testTrackArray3 = $this->Track->calculateKeyDifference($trackGroupE['Track'][3]);
+		$testTrackArray4 = $this->Track->calculateKeyDifference($trackGroupE['Track'][4]);
+		$testTrackArray5 = $this->Track->calculateKeyDifference($trackGroupE['Track'][5]);
+		
+		$this->assertArrayHasKey('key_new', $testTrackArray0);
+		$this->assertEquals('10A', $testTrackArray0['key_start_modified']);	// 156 -> 162 BPM, one tone higher
+		$this->assertEquals('5B', $testTrackArray1['key_start_modified']);	// 161 -> 162 BPM, no change
+		$this->assertEquals('7A', $testTrackArray2['key_start_modified']);	// 162 -> 162 BPM, no change
+		$this->assertEquals('2B', $testTrackArray3['key_start_modified']);	// 168 -> 162 BPM, one tone lower
+		$this->assertEquals('7A', $testTrackArray4['key_start_modified']);	// 180 -> 162 BPM, two tones lower
+		$this->assertEquals('', $testTrackArray5['key_start_modified']);	// No BPM given, empty result
+		$this->assertEquals('', $this->Track->calculateKeyDifference());	// Invalid input, empty result
+	}
 }
 ?>

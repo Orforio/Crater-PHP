@@ -34,7 +34,13 @@ class TrackFixture extends CakeTestFixture {
 		array('id' => 17, 'setlist_id' => '4', 'setlist_order' => '2', 'title' => 'Track Q', 'artist' => 'Artist Q', 'label' => 'Label Q', 'length' => '00:01:23', 'bpm_start' => '', 'bpm_end' => '', 'key_start' => '3A', 'key_end' => ''),
 		array('id' => 18, 'setlist_id' => '4', 'setlist_order' => '3', 'title' => 'Track R', 'artist' => 'Artist R', 'label' => 'Label R', 'length' => '00:01:23', 'bpm_start' => '', 'bpm_end' => '', 'key_start' => '3A', 'key_end' => ''),
 		array('id' => 19, 'setlist_id' => '4', 'setlist_order' => '4', 'title' => 'Track S', 'artist' => 'Artist S', 'label' => 'Label S', 'length' => '00:01:23', 'bpm_start' => '', 'bpm_end' => '', 'key_start' => '3A', 'key_end' => ''),
-		array('id' => 20, 'setlist_id' => '4', 'setlist_order' => '5', 'title' => 'Track T', 'artist' => 'Artist T', 'label' => 'Label T', 'length' => '00:01:23', 'bpm_start' => '', 'bpm_end' => '', 'key_start' => '3A', 'key_end' => '')
+		array('id' => 20, 'setlist_id' => '4', 'setlist_order' => '5', 'title' => 'Track T', 'artist' => 'Artist T', 'label' => 'Label T', 'length' => '00:01:23', 'bpm_start' => '', 'bpm_end' => '', 'key_start' => '3A', 'key_end' => ''),
+		array('id' => 21, 'setlist_id' => '5', 'setlist_order' => '1', 'title' => 'Track U', 'artist' => 'Artist U', 'label' => 'Label U', 'length' => '00:01:23', 'bpm_start' => '156', 'bpm_end' => '', 'key_start' => '3A', 'key_end' => ''),
+		array('id' => 22, 'setlist_id' => '5', 'setlist_order' => '2', 'title' => 'Track V', 'artist' => 'Artist V', 'label' => 'Label V', 'length' => '00:01:23', 'bpm_start' => '161', 'bpm_end' => '', 'key_start' => '5B', 'key_end' => ''),
+		array('id' => 23, 'setlist_id' => '5', 'setlist_order' => '3', 'title' => 'Track W', 'artist' => 'Artist W', 'label' => 'Label W', 'length' => '00:01:23', 'bpm_start' => '162', 'bpm_end' => '', 'key_start' => '7A', 'key_end' => ''),
+		array('id' => 24, 'setlist_id' => '5', 'setlist_order' => '4', 'title' => 'Track X', 'artist' => 'Artist X', 'label' => 'Label X', 'length' => '00:01:23', 'bpm_start' => '168', 'bpm_end' => '', 'key_start' => '9B', 'key_end' => ''),
+		array('id' => 25, 'setlist_id' => '5', 'setlist_order' => '5', 'title' => 'Track Y', 'artist' => 'Artist Y', 'label' => 'Label Y', 'length' => '00:01:23', 'bpm_start' => '180', 'bpm_end' => '', 'key_start' => '11A', 'key_end' => ''),
+		array('id' => 26, 'setlist_id' => '5', 'setlist_order' => '6', 'title' => 'Track Z', 'artist' => 'Artist Z', 'label' => 'Label Z', 'length' => '00:01:23', 'bpm_start' => '', 'bpm_end' => '', 'key_start' => '5B', 'key_end' => '')
 	);
 }
 ?>

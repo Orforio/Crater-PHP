@@ -14,7 +14,8 @@ class SetlistFixture extends CakeTestFixture {
 		array('id' => 1, 'name' => 'Sunset Trance I: Beachline Expressway', 'author' => 'TGGR.EXE', 'genre' => 'Trance', 'modified' => '2013-07-27 01:27:04', 'private_key' => '', 'master_bpm' => '140'),
 		array('id' => 2, 'name' => 'Trancemission III', 'author' => 'PkerUNO', 'genre' => 'Trance', 'modified' => '2013-07-27 01:27:04', 'private_key' => '', 'master_bpm' => '180'),
 		array('id' => 3, 'name' => 'Bemix', 'author' => 'DJ Konami', 'genre' => 'Beatmania', 'modified' => '2013-07-27 01:27:04', 'private_key' => '', 'master_bpm' => ''),
-		array('id' => 4, 'name' => 'House Party', 'author' => 'Noel', 'genre' => 'House', 'modified' => '2013-07-27 01:27:04', 'private_key' => '', 'master_bpm' => '')
+		array('id' => 4, 'name' => 'House Party', 'author' => 'Noel', 'genre' => 'House', 'modified' => '2013-07-27 01:27:04', 'private_key' => '', 'master_bpm' => ''),
+		array('id' => 5, 'name' => 'Hardcore Heaven', 'author' => '.59', 'genre' => 'Hardcore', 'modified' => '2013-07-27 01:27:04', 'private_key' => '', 'master_bpm' => '162')
 	);
 }
 ?>
