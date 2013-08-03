@@ -285,9 +285,49 @@ class Track extends AppModel {
 			$track['bpm_difference'] = round((($masterBPM - $track['bpm_start']) / $track['bpm_start']) * 100, 2);
 		}
 		else {
-			$track['bpm_difference'] = null;
+			$track['bpm_difference'] = false;
 		}
 		return $track;
+	}
+	
+	public function calculateKeyDifference($track = null) {
+		if (($track['bpm_difference'] || $track['bpm_difference'] === (float)0) && $track['key_start']) {
+			$roundedBPMDifference = intval($track['bpm_difference']);
+			
+			if ($roundedBPMDifference >= 3) {	// Tone goes up
+				$toneDifference = intval(($roundedBPMDifference + 3) / 6);
+				
+				$keyCode = preg_split('/(\D)/', $track['key_start'], -1, PREG_SPLIT_DELIM_CAPTURE);
+				$newKeyCodeNumber = $keyCode[0] + ((7 * $toneDifference) % 12);
+				if ($newKeyCodeNumber == 0) {
+					$newKeyCodeNumber = 12;
+				}
+				$track['key_start_modified'] = $newKeyCodeNumber . $keyCode[1];
+			}
+			elseif ($roundedBPMDifference <= -3) {	// Tone goes down
+				$toneDifference = abs(intval(($roundedBPMDifference - 3) / 6));
+				
+				$keyCode = preg_split('/(\D)/', $track['key_start'], -1, PREG_SPLIT_DELIM_CAPTURE);
+				$newKeyCodeNumber = $keyCode[0] - ((7 * $toneDifference) % 12);
+				if ($newKeyCodeNumber == 0) {
+					$newKeyCodeNumber = 12;
+				}
+				$track['key_start_modified'] = $newKeyCodeNumber . $keyCode[1];
+			}
+			else {
+				$track['key_start_modified'] = $track['key_start'];
+			}
+			
+			return $track;
+		}
+		elseif ($track) {
+			$track['key_start_modified'] = '';
+			
+			return $track;
+		}
+		else {
+			return '';
+		}
 	}
 }
 ?>

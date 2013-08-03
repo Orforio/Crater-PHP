@@ -29,6 +29,10 @@ class TrackTest extends CakeTestCase {
 //		$this->assertEquals('', $this->Track->calculateBPMDifference());	// Invalid input
 	}
 	
+	/**
+	 * @depends testCalculateBPMDifference
+	 */
+	
 	public function testCalculateKeyDifference() {
 		$trackGroupE = $this->Setlist->find('first', array(
 			'conditions' => array('Setlist.id' => 5),
@@ -36,19 +40,32 @@ class TrackTest extends CakeTestCase {
 			
 		debug($trackGroupE);
 		
-		$testTrackArray0 = $this->Track->calculateKeyDifference($trackGroupE['Track'][0]);
-		$testTrackArray1 = $this->Track->calculateKeyDifference($trackGroupE['Track'][1]);
-		$testTrackArray2 = $this->Track->calculateKeyDifference($trackGroupE['Track'][2]);
-		$testTrackArray3 = $this->Track->calculateKeyDifference($trackGroupE['Track'][3]);
-		$testTrackArray4 = $this->Track->calculateKeyDifference($trackGroupE['Track'][4]);
-		$testTrackArray5 = $this->Track->calculateKeyDifference($trackGroupE['Track'][5]);
+		$testTrackArray0 = $this->Track->calculateBPMDifference($trackGroupE['Track'][0], $trackGroupE['Setlist']['master_bpm']);
+		$testTrackArray0 = $this->Track->calculateKeyDifference($testTrackArray0);
 		
-		$this->assertArrayHasKey('key_new', $testTrackArray0);
+		$testTrackArray1 = $this->Track->calculateBPMDifference($trackGroupE['Track'][1], $trackGroupE['Setlist']['master_bpm']);
+		$testTrackArray1 = $this->Track->calculateKeyDifference($testTrackArray1);
+		
+		$testTrackArray2 = $this->Track->calculateBPMDifference($trackGroupE['Track'][2], $trackGroupE['Setlist']['master_bpm']);
+		$testTrackArray2 = $this->Track->calculateKeyDifference($testTrackArray2);
+		
+		$testTrackArray3 = $this->Track->calculateBPMDifference($trackGroupE['Track'][3], $trackGroupE['Setlist']['master_bpm']);
+		$testTrackArray3 = $this->Track->calculateKeyDifference($testTrackArray3);
+		
+		$testTrackArray4 = $this->Track->calculateBPMDifference($trackGroupE['Track'][4], $trackGroupE['Setlist']['master_bpm']);
+		$testTrackArray4 = $this->Track->calculateKeyDifference($testTrackArray4);
+		
+		$testTrackArray5 = $this->Track->calculateBPMDifference($trackGroupE['Track'][5], $trackGroupE['Setlist']['master_bpm']);
+		$testTrackArray5 = $this->Track->calculateKeyDifference($testTrackArray5);
+
+		debug($testTrackArray5);
+		
+		$this->assertArrayHasKey('key_start_modified', $testTrackArray0);
 		$this->assertEquals('10A', $testTrackArray0['key_start_modified']);	// 156 -> 162 BPM, one tone higher
 		$this->assertEquals('5B', $testTrackArray1['key_start_modified']);	// 161 -> 162 BPM, no change
 		$this->assertEquals('7A', $testTrackArray2['key_start_modified']);	// 162 -> 162 BPM, no change
 		$this->assertEquals('2B', $testTrackArray3['key_start_modified']);	// 168 -> 162 BPM, one tone lower
-		$this->assertEquals('7A', $testTrackArray4['key_start_modified']);	// 180 -> 162 BPM, two tones lower
+		$this->assertEquals('9A', $testTrackArray4['key_start_modified']);	// 180 -> 162 BPM, two tones lower
 		$this->assertEquals('', $testTrackArray5['key_start_modified']);	// No BPM given, empty result
 		$this->assertEquals('', $this->Track->calculateKeyDifference());	// Invalid input, empty result
 	}
