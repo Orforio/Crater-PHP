@@ -57,6 +57,9 @@ class TrackTest extends CakeTestCase {
 		
 		$testTrackArray5 = $this->Track->calculateBPMDifference($trackGroupE['Track'][5], $trackGroupE['Setlist']['master_bpm']);
 		$testTrackArray5 = $this->Track->calculateKeyDifference($testTrackArray5);
+		
+		$testTrackArray6 = $this->Track->calculateBPMDifference($trackGroupE['Track'][6], $trackGroupE['Setlist']['master_bpm']);
+		$testTrackArray6 = $this->Track->calculateKeyDifference($testTrackArray6);
 
 		debug($testTrackArray5);
 		
@@ -68,6 +71,7 @@ class TrackTest extends CakeTestCase {
 		$this->assertEquals('9A', $testTrackArray4['key_start_modified']);	// 180 -> 162 BPM, two tones lower
 		$this->assertEquals('', $testTrackArray5['key_start_modified']);	// No BPM given, empty result
 		$this->assertEquals('', $this->Track->calculateKeyDifference());	// Invalid input, empty result
+		$this->assertEquals('1B', $testTrackArray6['key_start_modified']);	// Test wrap-around issue
 	}
 }
 ?>

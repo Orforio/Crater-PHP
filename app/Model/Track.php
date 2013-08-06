@@ -298,7 +298,7 @@ class Track extends AppModel {
 				$toneDifference = intval(($roundedBPMDifference + 3) / 6);
 				
 				$keyCode = preg_split('/(\D)/', $track['key_start'], -1, PREG_SPLIT_DELIM_CAPTURE);
-				$newKeyCodeNumber = $keyCode[0] + ((7 * $toneDifference) % 12);
+				$newKeyCodeNumber = (($keyCode[0] + (7 * $toneDifference)) % 12);
 				if ($newKeyCodeNumber == 0) {
 					$newKeyCodeNumber = 12;
 				}
@@ -308,7 +308,11 @@ class Track extends AppModel {
 				$toneDifference = abs(intval(($roundedBPMDifference - 3) / 6));
 				
 				$keyCode = preg_split('/(\D)/', $track['key_start'], -1, PREG_SPLIT_DELIM_CAPTURE);
-				$newKeyCodeNumber = $keyCode[0] - ((7 * $toneDifference) % 12);
+				$newKeyCodeNumber = (($keyCode[0] - (7 * $toneDifference)) % 12);
+				if ($newKeyCodeNumber < 0) {
+					$newKeyCodeNumber += 12;
+				}
+				
 				if ($newKeyCodeNumber == 0) {
 					$newKeyCodeNumber = 12;
 				}
