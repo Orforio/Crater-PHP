@@ -27,7 +27,8 @@
 			<th>Length</th>
 			<th>BPM</th>
 			<th>Key Code</th>
-			<th>Key</th>
+			<th>Mod. Key</th>
+			<th>Key N.</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -38,8 +39,13 @@
 			<td><?php echo h($track['label']); ?></td>
 			<td><?php echo h($track['length']); ?></td>
 			<td><?php echo h($track['bpm_start']);
-				if ($setlist['Setlist']['master_bpm'] && $track['bpm_difference']) { echo $this->Track->displayBPM($track['bpm_difference']); } ?></td>
+				if ($setlist['Setlist']['master_bpm'] && $track['bpm_difference']) {
+					echo $this->Track->displayBPM($track['bpm_difference']);
+				} ?></td>
 			<td><?php echo h($track['key_start']); ?></td>
+			<td><?php if ($setlist['Setlist']['master_bpm'] && $track['key_start_modified']) {
+					echo h($track['key_start_modified']);
+			} ?></td>
 			<td><?php echo h($track['key_notation_start']); ?></td>
 		</tr>
 <?php endforeach; ?>

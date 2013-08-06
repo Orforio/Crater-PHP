@@ -23,29 +23,19 @@ class SetlistsController extends AppController {
         
         $setlist['Setlist']['urlhash'] = $this->Urlhash->encrypt($id);
         
-        /*
-		$tracks = $this->Track->find('all', array(
-        	'conditions' => array('Track.setlist_id' => $id),
-        	'order' => array('Track.setlist_order ASC')
-		));
-		
-		if (!$tracks) {
-			throw new NotFoundException(__('No tracks found for requested setlist'));
-		}
-		*/
 		foreach ($setlist['Track'] as $i => $track) {	// Appends each key's notational form to the data array
 			$setlist['Track'][$i]['key_notation_start'] = $this->Track->getKeyNotation($track['key_start']);
 		}
 		
 		if ($setlist['Setlist']['master_bpm']) {
 			foreach ($setlist['Track'] as $i => $track) {
-				$setlist['Track'][$i] = $this->Track->calculateBPMDifference($track, $setlist['Setlist']['master_bpm']);
+				$track = $this->Track->calculateBPMDifference($track, $setlist['Setlist']['master_bpm']);
+				$setlist['Track'][$i] = $this->Track->calculateKeyDifference($track);
 			}
-			//$setlist = $this->Track->calculateBPMDifference($setlist, $setlist['Setlist']['master_bpm']);
 		}
 		
 		$this->set('setlist', $setlist);
-		// $this->set('tracks', $tracks);
+
     }
     
     public function add() {	// Adds a new setlist
