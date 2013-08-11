@@ -268,15 +268,10 @@ class Track extends AppModel {
 	public function afterFind($results, $primary = false) {	// Turns database 00:00:00 into 00:00 for user input
 //		debug($results);
 		foreach ($results as $i => $result) {
-			if ($result['Track']['length']) {
+			if (isset($result['Track']['length'])) {
 				$results[$i]['Track']['length'] = date('i:s', strtotime($result['Track']['length']));
 			}
 		}
-		
-//		if ($results['Setlist']['master_bpm']) {
-//			$results = $this->_calculateBPMDifference($results);
-//		}
-		
 		return $results;
 	}
 	

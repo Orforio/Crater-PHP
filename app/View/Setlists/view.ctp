@@ -16,6 +16,18 @@
 	<tr>
 		<td><strong>URL Hash (replaces ID)</strong>: <?php echo h($setlist['Setlist']['urlhash']); ?></td>
 	</tr>
+	<tr>
+		<td><strong>Actions</strong>: <?php echo $this->Html->link('Edit', array(
+				'action' => 'edit',
+				$setlist['Setlist']['urlhash']), array(
+				'class' => 'btn btn-primary')); ?>
+			<?php echo $this->Form->postLink('Delete', array(
+				'action' => 'delete',
+				$setlist['Setlist']['urlhash']
+				), array(
+				'confirm' => 'Are you sure?',
+				'class' => 'btn btn-danger')); ?></td>
+	</tr>
 </table>
 
 <table class="table table-striped table-bordered table-condensed">

@@ -5,13 +5,27 @@ class SetlistsController extends AppController {
     public $uses = array('Setlist', 'Track');
 	
 	public function index() {
-        $this->set('setlists', $this->Setlist->find('all'));
+		$setlists = $this->Setlist->find('all');
+		
+		if (!$setlists) {
+			throw new NotFoundException(__('No setlists could be found'));
+		}
+		
+//		if (Configure::read('debug') > 0) {	-- Will eventually have to implement this as a debug-only feature
+			foreach ($setlists as $i => $setlist) {
+				$setlists[$i]['Setlist']['urlhash'] = $this->Urlhash->encrypt($setlist['Setlist']['id']);
+			}
+//		}
+		
+        $this->set('setlists', $setlists);
     }
     
-    public function view($id = null) {	// Displays the requested setlist
-        if (!$id) {
-            throw new NotFoundException(__('Invalid setlist'));
+    public function view($urlHash = null) {	// Displays the requested setlist
+        if (!$urlHash) {
+            throw new NotFoundException(__('No setlist specified'));
         }
+        
+        $id = $this->Urlhash->decrypt($urlHash);
 
         $setlist = $this->Setlist->find('first', array(
         	'conditions' => array('Setlist.id' => $id),
@@ -21,7 +35,7 @@ class SetlistsController extends AppController {
             throw new NotFoundException(__('Invalid setlist'));
         }
         
-        $setlist['Setlist']['urlhash'] = $this->Urlhash->encrypt($id);
+        $setlist['Setlist']['urlhash'] = $urlHash;
         
 		foreach ($setlist['Track'] as $i => $track) {	// Appends each key's notational form to the data array
 			$setlist['Track'][$i]['key_notation_start'] = $this->Track->getKeyNotation($track['key_start']);
@@ -35,7 +49,6 @@ class SetlistsController extends AppController {
 		}
 		
 		$this->set('setlist', $setlist);
-
     }
     
     public function add() {	// Adds a new setlist
@@ -43,7 +56,7 @@ class SetlistsController extends AppController {
             $this->Setlist->create();
             if ($this->Setlist->saveAssociated($this->stripBlankPostData($this->request->data))) {
                 $this->Session->setFlash('Your setlist has been saved.');
-                $this->redirect(array('action' => 'index'));
+                $this->redirect(array('action' => 'view', $this->Urlhash->encrypt($this->Setlist->getLastInsertID())));
             } else {
                 $this->Session->setFlash('Unable to add your setlist.');
 //                debug($this->Setlist->validationErrors);
@@ -62,30 +75,19 @@ class SetlistsController extends AppController {
 	    	'conditions' => array('Setlist.id' => $decryptedID),
 	    	'recursive' => 1));
 	
-//	    $setlist = $this->Setlist->findById($decryptedID);
 	    if (!$setlist) {
 	        throw new NotFoundException(__('Invalid setlist'));
 	    }
-	    
-/*	    $tracks = $this->Track->find('all', array(
-        	'conditions' => array('Track.setlist_id' => $decryptedID),
-        	'order' => array('Track.setlist_order ASC')
-		)); */
-		
-/*		if (!$tracks) {
-			throw new NotFoundException(__('No tracks found for requested setlist'));
-		}	*/
 		
 		$setlist['Setlist']['suggested_bpm'] = $this->Setlist->calculateAverageBPM($setlist['Track']);
 		
 		$this->set('setlist', $setlist);
-//		$this->set('tracks', $tracks);
 	
 	    if ($this->request->is('post') || $this->request->is('put')) {
 	        $this->Setlist->id = $decryptedID;
 	        if ($this->Setlist->saveAssociated($this->request->data)) {
 	            $this->Session->setFlash('Your setlist has been updated.', 'default', array('class' => 'alert alert-success', 'options' => array('data-dismiss' => 'alert')));
-	            $this->redirect(array('action' => 'index'));
+	            $this->redirect(array('action' => 'view', $id));
 	        } else {
 	            $this->Session->setFlash('Unable to update your setlist.', 'default', array('class' => 'alert alert-error', 'params' => array('data-dismiss' => 'alert')));
 	        }
@@ -93,7 +95,6 @@ class SetlistsController extends AppController {
 	
 	    if (!$this->request->data) {
 	        $this->request->data = $setlist;
-	      //  $this->request->data['Track'] = $tracks;
 	    }
 	}
 	
@@ -101,9 +102,11 @@ class SetlistsController extends AppController {
 	    if ($this->request->is('get')) {
 	        throw new MethodNotAllowedException();
 	    }
+	    
+	    $decryptedID = $this->Urlhash->decrypt($id);
 	
-	    if ($this->Setlist->delete($id, $cascade = true)) {
-	        $this->Session->setFlash('The setlist with id: ' . $id . ' has been deleted.');
+	    if ($this->Setlist->delete($decryptedID, $cascade = true)) {
+	        $this->Session->setFlash('The setlist with id: ' . $decryptedID . ' has been deleted.');
 	        $this->redirect(array('action' => 'index'));
 	    }
 	}
