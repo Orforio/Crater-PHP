@@ -65,22 +65,21 @@ class Track extends AppModel {
 			)
 		),
 		'key_start' => array(
-			'rule' => array('custom', '/(^([1-9]|1[0-2])[abAB]$)|(^[a-gA-G][#b]?[m]?$)/'),	// Captures either Camelot code or key signature
+			'rule' => array('custom', '/(^([1-9]|1[0-2])[abAB]$)|(^[a-gA-G][#♯Bb♭]?[mM]?$)/'),	// Captures either Camelot code or key signature
 			'required' => true,
 			'allowEmpty' => true,
 			'message' => 'Please provide a valid key in either Key notation (eg F#, Bbm) or Camelot code (eg 7A, 12B).'
 		),
 		'key_end' => array(
-			'rule' => array('custom', '/(^([1-9]|1[0-2])[abAB]$)|(^[a-gA-G][#b]?[m]?$)/'),	// Captures either Camelot code or key signature
+			'rule' => array('custom', '/(^([1-9]|1[0-2])[abAB]$)|(^[a-gA-G][#♯Bb♭]?[mM]?$)/'),	// Captures either Camelot code or key signature
 			'required' => false,
 			'allowEmpty' => true,
 			'message' => 'Please provide a valid key in either Key notation (eg F#, Bbm) or Camelot code (eg 7A, 12B).'
 		)
 	);
-//	private $validKeys = array('Abm', 'B', 'Ebm', 'F#', 'Gb', 'Bbm', 'Db', 'Fm', 'Ab', 'G#', 'Cm', 'Eb', 'Gm', 'Bb', 'Dm', 'F', 'Am', 'C', 'Em', 'G', 'Bm', 'D', 'F#m', 'Gbm', 'A', 'Dbm', 'E');	// TODO: try and integrate this into getKeyCode below
 
-		public function getKeyNotation($key) {	// Returns a key notation to display according to user preference
-		switch ($key) {
+		public function getKeyNotation($key = null) {	// Returns a key notation to display according to user preference
+		switch (strtoupper($key)) {
 			case "1A":
 				return "A♭";
 				break;
@@ -153,102 +152,102 @@ class Track extends AppModel {
 			case "12B":
 				return "E";
 				break;
-			case "":
-				return null;
-				break;
 			default:
-				throw new BadRequestException(__('getKeyNotation: Invalid key'));
+				return '';
+				break;
 		}
 	}
 	
-	public function getKeyCode($key) {	// Returns a Camelot Key Code for each given key
-		switch ($key) {
-			case "Abm":
+	public function getKeyCode($key = null) {	// Returns a Camelot Key Code for each given key
+		$replaceFrom = array('♯', '♭');
+		$replaceTo = array('#', 'b');
+		
+		$key = str_replace($replaceFrom, $replaceTo, $key);
+		switch (strtolower($key)) {
+			case "abm":
 				return "1A";
 				break;
-			case "B":
+			case "b":
 				return "1B";
 				break;
-			case "Ebm":
+			case "ebm":
 				return "2A";
 				break;
-			case "F#":
+			case "f#":
 				return "2B";
 				break;
-			case "Gb":
+			case "gb":
 				return "2B";
 				break;
-			case "Bbm":
+			case "bbm":
 				return "3A";
 				break;
-			case "Db":
+			case "db":
 				return "3B";
 				break;
-			case "Fm":
+			case "fm":
 				return "4A";
 				break;
-			case "Ab":
+			case "ab":
 				return "4B";
 				break;
-			case "G#";
+			case "g#";
 				return "4B";
 				break;
-			case "Cm":
+			case "cm":
 				return "5A";
 				break;
-			case "Eb":
+			case "eb":
 				return "5B";
 				break;
-			case "Gm":
+			case "gm":
 				return "6A";
 				break;
-			case "Bb":
+			case "bb":
 				return "6B";
 				break;
-			case "Dm":
+			case "dm":
 				return "7A";
 				break;
-			case "F":
+			case "f":
 				return "7B";
 				break;
-			case "Am":
+			case "am":
 				return "8A";
 				break;
-			case "C":
+			case "c":
 				return "8B";
 				break;
-			case "Em":
+			case "em":
 				return "9A";
 				break;
-			case "G":
+			case "g":
 				return "9B";
 				break;
-			case "Bm":
+			case "bm":
 				return "10A";
 				break;
-			case "D":
+			case "d":
 				return "10B";
 				break;
-			case "F#m":
+			case "f#m":
 				return "11A";
 				break;
-			case "Gbm":
+			case "gbm":
 				return "11A";
 				break;
-			case "A":
+			case "a":
 				return "11B";
 				break;
-			case "Dbm":
+			case "dbm":
 				return "12A";
 				break;
-			case "E":
+			case "e":
 				return "12B";
 				break;
-			case "":
+			default:
 				return "";
 				break;
-			default:
-				throw new BadRequestException(__('Invalid key'));
 		}
 	}
 	
@@ -260,6 +259,9 @@ class Track extends AppModel {
 		
 		if (!is_numeric(substr($this->data['Track']['key_start'], 0, 1))) {	// If first character of Key isn't numeric, we need to convert from key notation to a Camelot key code
 			$this->data['Track']['key_start'] = $this->getKeyCode($this->data['Track']['key_start']);
+		}
+		else {	// Key is numeric, therefore valid Camelot Key Code, but let's make sure it's uppercase
+			$this->data['Track']['key_start'] = strtoupper($this->data['Track']['key_start']);
 		}
 		
 		return true;

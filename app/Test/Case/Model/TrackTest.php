@@ -11,6 +11,22 @@ class TrackTest extends CakeTestCase {
 		$this->Track = ClassRegistry::init('Track');
 	}
 	
+	public function testGetKeyNotation() {
+		$this->assertEquals('B', $this->Track->getKeyNotation('1B'));
+		$this->assertEquals('A♭', $this->Track->getKeyNotation('4B'));
+		$this->assertEquals('F♯m', $this->Track->getKeyNotation('11A'));
+		$this->assertEquals('E', $this->Track->getKeyNotation('12b'));	// Lowercase letter
+		$this->assertEquals('', $this->Track->getKeyNotation());
+	}
+	
+	public function testGetKeyCode() {
+		$this->assertEquals('2A', $this->Track->getKeyCode('Ebm'));
+		$this->assertEquals('2B', $this->Track->getKeyCode('F#'));
+		$this->assertEquals('6B', $this->Track->getKeyCode('b♭'));
+		$this->assertEquals('10A', $this->Track->getKeyCode('bM'));
+		$this->assertEquals('', $this->Track->getKeyCode());
+	}
+	
 	public function testCalculateBPMDifference() {
 		$trackGroupB = $this->Setlist->find('first', array(
 			'conditions' => array('Setlist.id' => 2),
@@ -26,7 +42,6 @@ class TrackTest extends CakeTestCase {
 		$this->assertEquals(0, $testTrackArray0['bpm_difference']);		// 180 -> 180 BPM
 		$this->assertEquals(5.88, $testTrackArray1['bpm_difference']);	// 170 -> 180 BPM
 		$this->assertEquals(-2.17, $testTrackArray4['bpm_difference']);	// 184 -> 180 BPM
-//		$this->assertEquals('', $this->Track->calculateBPMDifference());	// Invalid input
 	}
 	
 	/**
