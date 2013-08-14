@@ -54,22 +54,27 @@ class SetlistsController extends AppController {
     public function add() {	// Adds a new setlist
         if ($this->request->is('post')) {
             $this->Setlist->create();
+            $this->request->data['Setlist']['private_key'] = $this->generatePrivateKey();
             if ($this->Setlist->saveAssociated($this->stripBlankPostData($this->request->data))) {
-                $this->Session->setFlash('Your setlist has been saved.');
-                $this->redirect(array('action' => 'view', $this->Urlhash->encrypt($this->Setlist->getLastInsertID())));
+                $this->Session->setFlash('Your setlist has been saved', 'default', array('class' => 'alert alert-success'));
+                $this->redirect(array('action' => 'edit', $this->Urlhash->encrypt($this->Setlist->getLastInsertID()), $this->request->data['Setlist']['private_key']));
             } else {
-                $this->Session->setFlash('Unable to add your setlist.');
+                $this->Session->setFlash('Unable to add your setlist', 'default', array('class' => 'alert alert-danger'));
 //                debug($this->Setlist->validationErrors);
             }
         }
     }
     
-    public function edit($id = null) {	// Edits an existing setlist
-	    if (!$id) {
+    public function edit($urlHash = null, $privateKey = null) {	// Edits an existing setlist
+	    if (!$urlHash) {
 	        throw new NotFoundException(__('Invalid setlist'));
 	    }
+	    elseif (!$privateKey) {
+		    $this->Session->setFlash('Invalid Edit Key', 'default', array('class' => 'alert alert-danger', 'options' => array('data-dismiss' => 'alert')));
+		    $this->redirect(array('action' => 'view', $urlHash));
+	    }
 	    
-	    $decryptedID = $this->Urlhash->decrypt($id);
+	    $decryptedID = $this->Urlhash->decrypt($urlHash);
 	    
 	    $setlist = $this->Setlist->find('first', array(
 	    	'conditions' => array('Setlist.id' => $decryptedID),
@@ -78,8 +83,15 @@ class SetlistsController extends AppController {
 	    if (!$setlist) {
 	        throw new NotFoundException(__('Invalid setlist'));
 	    }
+	    
+	    if ($setlist['Setlist']['private_key'] != $privateKey) {
+		    $this->Session->setFlash('Invalid Edit Key', 'default', array('class' => 'alert alert-danger', 'options' => array('data-dismiss' => 'alert')));
+		    $this->redirect(array('action' => 'view', $urlHash));
+	    }
 		
 		$setlist['Setlist']['suggested_bpm'] = $this->Setlist->calculateAverageBPM($setlist['Track']);
+		
+		$setlist['Setlist']['urlhash'] = $urlHash;
 		
 		$this->set('setlist', $setlist);
 	
@@ -87,9 +99,9 @@ class SetlistsController extends AppController {
 	        $this->Setlist->id = $decryptedID;
 	        if ($this->Setlist->saveAssociated($this->request->data)) {
 	            $this->Session->setFlash('Your setlist has been updated.', 'default', array('class' => 'alert alert-success', 'options' => array('data-dismiss' => 'alert')));
-	            $this->redirect(array('action' => 'view', $id));
+	            $this->redirect(array('action' => 'view', $urlHash));
 	        } else {
-	            $this->Session->setFlash('Unable to update your setlist.', 'default', array('class' => 'alert alert-error', 'params' => array('data-dismiss' => 'alert')));
+	            $this->Session->setFlash('Unable to update your setlist.', 'default', array('class' => 'alert alert-danger', 'params' => array('data-dismiss' => 'alert')));
 	        }
 	    }
 	
@@ -98,16 +110,35 @@ class SetlistsController extends AppController {
 	    }
 	}
 	
-	public function delete($id) {	// Deletes a setlist
+	public function delete($urlHash = null, $privateKey = null) {	// Deletes a setlist
 	    if ($this->request->is('get')) {
 	        throw new MethodNotAllowedException();
 	    }
+	    if (!$urlHash) {
+	        throw new NotFoundException(__('Invalid setlist'));
+	    }
+	    elseif (!$privateKey) {
+		    $this->Session->setFlash('Invalid Edit Key', 'default', array('class' => 'alert alert-danger'));
+		    $this->redirect(array('action' => 'view', $urlHash));
+	    }
 	    
-	    $decryptedID = $this->Urlhash->decrypt($id);
+	    $decryptedID = $this->Urlhash->decrypt($urlHash);
+	    
+	    $setlist = $this->Setlist->find('first', array(
+	    	'conditions' => array('Setlist.id' => $decryptedID)));
+	    	
+	    if ($setlist['Setlist']['private_key'] != $privateKey) {
+		    $this->Session->setFlash('Invalid Edit Key', 'default', array('class' => 'alert alert-danger'));
+		    $this->redirect(array('action' => 'view', $urlHash));
+	    }
 	
 	    if ($this->Setlist->delete($decryptedID, $cascade = true)) {
-	        $this->Session->setFlash('The setlist with id: ' . $decryptedID . ' has been deleted.');
+	        $this->Session->setFlash('Setlist ' . h($setlist['Setlist']['name']) . ' has been deleted', 'default', array('class' => 'alert alert-success'));
 	        $this->redirect(array('action' => 'index'));
+	    }
+	    else {
+		    $this->Session->setFlash('Could not delete setlist', 'default', array('class' => 'alert alert-danger'));
+		    $this->redirect(array('action' => 'view', $urlHash));
 	    }
 	}
 	
@@ -120,6 +151,14 @@ class SetlistsController extends AppController {
 			}
 		}
 		return $strippedData;
+	}
+	
+	protected function generatePrivateKey() {
+		$secretSeed = rand() . time();
+		$secretSeed = str_shuffle($secretSeed);
+		$secretSeed = substr($secretSeed, 0, 6);
+		
+		return $this->Urlhash->encrypt($secretSeed);
 	}
 	
 	public function beforeFilter() {

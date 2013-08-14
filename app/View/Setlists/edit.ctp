@@ -12,6 +12,7 @@
 		));
 	echo $this->Form->input('Setlist.id', array('type' => 'hidden'));
 ?>
+<div class="alert alert-info"><strong>Edit Key</strong>: In order to be able to edit this setlist in the future, please note down your Edit Key (<strong><?php echo h($setlist['Setlist']['private_key']); ?></strong>) or <strong><?php echo $this->Html->link('save this edit link', array('controller' => 'setlist', 'action' => 'edit', $setlist['Setlist']['urlhash'], $setlist['Setlist']['private_key']), array('class' => 'alert-link')); ?></strong></div>
 <table class="table table-bordered">
 	<tr>
 		<td><?php echo $this->Form->input('Setlist.name', array('label' => 'Name')); ?></td>
