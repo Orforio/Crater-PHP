@@ -70,8 +70,13 @@ class SetlistsController extends AppController {
 	        throw new NotFoundException(__('Invalid setlist'));
 	    }
 	    elseif (!$privateKey) {
-		    $this->Session->setFlash('You need this setlist\'s Edit Key to update it', 'flash_danger_dismissable');
-		    $this->redirect(array('action' => 'view', $urlHash));
+	    	if (!isset($this->request->query['editkey'])) {
+		    	$this->Session->setFlash('You need this setlist\'s Edit Key to update it', 'flash_danger_dismissable');
+				$this->redirect(array('action' => 'view', $urlHash));
+	    	}
+	    	else {
+		    	$privateKey = $this->request->query['editkey'];
+	    	}
 	    }
 	    
 	    $decryptedID = $this->Urlhash->decrypt($urlHash);

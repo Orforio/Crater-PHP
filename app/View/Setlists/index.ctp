@@ -7,7 +7,6 @@
 	<tr>
 		<th>ID</th>
 		<th>Name</th>
-		<th>Action</th> 
 		<th>Modified</th>
 	</tr>
 	<?php foreach ($setlists as $setlist): ?>
@@ -16,11 +15,6 @@
 		<td><?php echo $this->Html->link($setlist['Setlist']['name'], array(
 			'action' => 'view',
 			$setlist['Setlist']['urlhash'])); ?>
-		</td>
-		<td><?php echo $this->Html->link('Edit', array(
-				'action' => 'edit',
-				$setlist['Setlist']['urlhash']), array(
-				'class' => 'btn btn-primary')); ?>
 		</td>
 		<td><?php echo $setlist['Setlist']['modified']; ?></td>
 	</tr>
