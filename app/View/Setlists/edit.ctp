@@ -5,6 +5,7 @@
 			'label' => false,
 			'type' => 'text',
 			'div' => false,
+			'class' => 'form-control',
 			'error' => array(
 				'attributes' => array(
 					'class' => 'alert alert-danger'))
@@ -38,6 +39,7 @@
 			<th>Length</th>
 			<th>BPM</th>
 			<th>Key</th>
+			<th>&nbsp;</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -50,13 +52,14 @@
 	echo $this->Form->input('Track.' . $i . '.setlist_order', array('type' => 'hidden'));
 	$this->Form->unlockField('Track.' . $i . '.setlist_order');
 ?>
-			<td class="draggable" style="white-space: nowrap;"><i class="icon-resize-vertical"></i><label class="setlist_order"> <?php echo h($track['setlist_order']); ?></label></td>
+			<td class="draggable" style="white-space: nowrap;"><span class="glyphicon glyphicon-sort"><label class="setlist_order"> <?php echo h($track['setlist_order']); ?></label></span></td>
 			<td><?php echo $this->Form->input('Track.' . $i . '.artist'); ?></td>
 			<td><?php echo $this->Form->input('Track.' . $i . '.title'); ?></td>
-			<td><?php echo $this->Form->input('Track.' . $i . '.label', array('class' => 'input-small')); ?></td>
-			<td><?php echo $this->Form->input('Track.' . $i . '.length', array('class' => 'input-mini', 'placeholder' => '00:00')); ?></td>
-			<td><?php echo $this->Form->input('Track.' . $i . '.bpm_start', array('class' => 'input-mini')); ?></td>
-			<td><?php echo $this->Form->input('Track.' . $i . '.key_start', array('class' => 'input-mini')); ?></td>
+			<td><?php echo $this->Form->input('Track.' . $i . '.label'); ?></td>
+			<td><?php echo $this->Form->input('Track.' . $i . '.length', array('placeholder' => '00:00')); ?></td>
+			<td><?php echo $this->Form->input('Track.' . $i . '.bpm_start', array('placeholder' => 'BPM')); ?></td>
+			<td><?php echo $this->Form->input('Track.' . $i . '.key_start', array('placeholder' => 'Key')); ?></td>
+			<td><?php echo $this->Form->button('<span class="glyphicon glyphicon-remove-circle"></span>', array('type' => 'button', 'class' => 'btn btn-xs btn-danger removeRowButton')); ?></td>
 		</tr>
 <?php
 	endforeach;
@@ -64,6 +67,7 @@
 	</tbody>
 </table>
 <div class="form-actions">
+<p><?php echo $this->Form->button('Add row', array('type' => 'button', 'id' => 'addRowButton', 'class' => 'btn btn-sm btn-success')); ?></p>
 <?php echo $this->Form->end(array(
 	'label' => 'Save Setlist',
 	'class' => 'btn btn-primary'
@@ -77,64 +81,13 @@
 		'confirm' => 'Are you sure?',
 		'class' => 'btn btn-danger')); ?>
 </div>
-<?php
-/*    $this->Js->get('#editForm tbody');
-	$this->Js->sortable(array(
-	    'distance' => 5,
-	    'containment' => 'parent',
-	    'handle' => '.draggable',
-	    'axis' => 'y',
-	    'cursor' => 'move',
-	    'delay' => 150,
-	    'revert' => true,
-	    'items' => '> tr',
-		'helper' => 'sortableHelper(e, tr)',
-	    'update' => 'onSortableUpdate(event, ui)'
-	)); */
-?>
 <script type="text/javascript">
 //<![CDATA[
 $(document).ready(function () {
-	$("#editForm tbody").sortable({
-		axis: "y",
-		containment: "parent",
-		cursor: "move",
-		delay: 150,
-		distance: 5,
-		handle: ".draggable",
-		helper: function(e, tr) {
-			var $originals = tr.children();
-			var $helper = tr.clone();
-			$helper.children().each(function(index) {
-				// Set helper cell sizes to match the original sizes
-				$(this).width($originals.eq(index).width());
-			});
-			return $helper;
-		},
-		forcePlaceholderSize: true,
-		placeholder:'must-have-class',
-	    start: function (event, ui) {
-	        // Build a placeholder cell that spans all the cells in the row
-	        var cellCount = 0;
-	        $('td, th', ui.helper).each(function () {
-	            // For each TD or TH try and get it's colspan attribute, and add that or 1 to the total
-	            var colspan = 1;
-	            var colspanAttr = $(this).attr('colspan');
-	            if (colspanAttr > 1) {
-	                colspan = colspanAttr;
-	            }
-	            cellCount += colspan;
-	        });
+	startSortable('#editForm');
 	
-	        // Add the placeholder UI - note that this is the item's content, so TD rather than TR
-	        ui.placeholder.html('<td colspan="' + cellCount + '">&nbsp;</td>');
-	    },
-		items: "> tr",
-		revert: true,
-		update: function (event, ui) {
-			onSortableUpdate(event, ui);
-		}
-	}).disableSelection();
+	$('#addRowButton').on('click', addTrackRow);
+	$('.removeRowButton').on('click', removeTrackRow);
 });
 //]]>
 </script>
