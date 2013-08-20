@@ -98,9 +98,10 @@ class SetlistsController extends AppController {
 	        $this->Setlist->id = $decryptedID;
 	        if ($this->Setlist->saveAssociated($this->request->data)) {
 	            $this->Session->setFlash('Your setlist has been updated', 'flash_success_dismissable');
-				$this->redirect(array('action' => 'edit', $urlHash, $privateKey));
+				$setlist = array_replace_recursive($setlist, $this->request->data);
 	        } else {
 	            $this->Session->setFlash('Something went wrong and your setlist hasn\'t been updated', 'flash_danger_dismissable');
+	            $setlist = array_replace_recursive($setlist, $this->request->data);
 	        }
 	    }
 		
