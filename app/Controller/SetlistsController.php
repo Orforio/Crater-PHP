@@ -93,22 +93,22 @@ class SetlistsController extends AppController {
 		    $this->Session->setFlash('You need this setlist\'s Edit Key to update it', 'flash_danger_dismissable');
 		    $this->redirect(array('action' => 'view', $urlHash));
 	    }
+	    
+	    if ($this->request->is('post') || $this->request->is('put')) {
+	        $this->Setlist->id = $decryptedID;
+	        if ($this->Setlist->saveAssociated($this->request->data)) {
+	            $this->Session->setFlash('Your setlist has been updated', 'flash_success_dismissable');
+				$this->redirect(array('action' => 'edit', $urlHash, $privateKey));
+	        } else {
+	            $this->Session->setFlash('Something went wrong and your setlist hasn\'t been updated', 'flash_danger_dismissable');
+	        }
+	    }
 		
 		$setlist['Setlist']['suggested_bpm'] = $this->Setlist->calculateAverageBPM($setlist['Track']);
 		
 		$setlist['Setlist']['urlhash'] = $urlHash;
 		
 		$this->set('setlist', $setlist);
-	
-	    if ($this->request->is('post') || $this->request->is('put')) {
-	        $this->Setlist->id = $decryptedID;
-	        if ($this->Setlist->saveAssociated($this->request->data)) {
-	            $this->Session->setFlash('Your setlist has been updated', 'flash_success_dismissable');
-	           // $this->redirect(array('action' => 'view', $urlHash));
-	        } else {
-	            $this->Session->setFlash('Something went wrong and your setlist hasn\'t been updated', 'flash_danger_dismissable');
-	        }
-	    }
 	
 	    if (!$this->request->data) {
 	        $this->request->data = $setlist;
