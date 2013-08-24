@@ -57,7 +57,7 @@ class SetlistsController extends AppController {
             $this->request->data['Setlist']['private_key'] = $this->generatePrivateKey();
             if ($this->Setlist->saveAssociated($this->stripBlankPostData($this->request->data))) {
                 $this->Session->setFlash('Your setlist has been saved', 'flash_success_dismissable');
-                $this->redirect(array('action' => 'edit', $this->Urlhash->encrypt($this->Setlist->getLastInsertID()), $this->request->data['Setlist']['private_key']));
+                return $this->redirect(array('action' => 'edit', $this->Urlhash->encrypt($this->Setlist->getLastInsertID()), $this->request->data['Setlist']['private_key']));
             } else {
                 $this->Session->setFlash('Something went wrong and your setlist hasn\'t been saved yet. Please check for any erorrs below and try again', 'flash_danger_dismissable');
 //                debug($this->Setlist->validationErrors);
@@ -91,7 +91,7 @@ class SetlistsController extends AppController {
 	    
 	    if ($setlist['Setlist']['private_key'] != $privateKey) {
 		    $this->Session->setFlash('You need this setlist\'s Edit Key to update it', 'flash_danger_dismissable');
-		    $this->redirect(array('action' => 'view', $urlHash));
+		    return $this->redirect(array('action' => 'view', $urlHash));
 	    }
 	    
 	    if ($this->request->is('post') || $this->request->is('put')) {
@@ -125,7 +125,7 @@ class SetlistsController extends AppController {
 	    }
 	    elseif (!$privateKey) {
 		    $this->Session->setFlash('You need this setlist\'s Edit Key to delete it', 'flash_danger_dismissable');
-		    $this->redirect(array('action' => 'view', $urlHash));
+		    return $this->redirect(array('action' => 'view', $urlHash));
 	    }
 	    
 	    $decryptedID = $this->Urlhash->decrypt($urlHash);
@@ -135,16 +135,16 @@ class SetlistsController extends AppController {
 	    	
 	    if ($setlist['Setlist']['private_key'] != $privateKey) {
 		    $this->Session->setFlash('You need this setlist\'s Edit Key to delete it', 'flash_danger_dismissable');
-		    $this->redirect(array('action' => 'view', $urlHash));
+		    return $this->redirect(array('action' => 'view', $urlHash));
 	    }
 	
 	    if ($this->Setlist->delete($decryptedID, $cascade = true)) {
 	        $this->Session->setFlash('Setlist "' . h($setlist['Setlist']['name']) . '" has been deleted', 'flash_success_dismissable');
-	        $this->redirect(array('action' => 'index'));
+	        return $this->redirect(array('action' => 'index'));
 	    }
 	    else {
 		    $this->Session->setFlash('Something went wrong and the setlist couldn\'t be deleted', 'flash_danger_dismissable');
-		    $this->redirect(array('action' => 'view', $urlHash));
+		    return $this->redirect(array('action' => 'view', $urlHash));
 	    }
 	}
 	
