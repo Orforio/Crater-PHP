@@ -76,7 +76,7 @@ $(document).ready(function () {
 	startSortable('#editForm');
 	
 	$('#addRowButton').on('click', addTrackRow);
-	$('.removeRowButton').on('click', removeTrackRow);
+	$('#editForm').on('click', '.removeRowButton', removeTrack);
 });
 //]]>
 </script>

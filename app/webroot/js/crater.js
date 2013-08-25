@@ -59,18 +59,49 @@ function addTrackRow() {	// Add a new row to the end of the form
 	var newRow = '<tr>' +
 			'<input type="hidden" name="data[Track][' + newRowIndex + '][setlist_order]" value="' + newRowNumber + '" id="Track' + newRowIndex + 'SetlistOrder">' +
 			'<td class="draggable"><span class="glyphicon glyphicon-sort"><label class="setlist_order"> ' + newRowNumber + '</label></span></td>' +
-			'<td><input name="data[Track][' + newRowIndex + '][artist]" placeholder="Artist" type="text" id="Track' + newRowIndex + 'Artist"></td>' +
-			'<td><input name="data[Track][' + newRowIndex + '][title]" placeholder="Title" type="text" id="Track' + newRowIndex + 'Title" required="required"></td>' +
-			'<td><input name="data[Track][' + newRowIndex + '][label]" class="input-small" placeholder="Label" type="text" id="Track' + newRowIndex + 'Label"></td>' +
-			'<td><input name="data[Track][' + newRowIndex + '][length]" class="input-mini" placeholder="00:00" type="text" id="Track' + newRowIndex + 'Length"></td>' +
-			'<td><input name="data[Track][' + newRowIndex + '][bpm_start]" class="input-mini" placeholder="BPM" type="text" id="Track' + newRowIndex + 'BpmStart"></td>' +
-			'<td><input name="data[Track][' + newRowIndex + '][key_start]" class="input-mini" placeholder="Key" type="text" id="Track' + newRowIndex + 'KeyStart"></td>' +
+			'<td><input name="data[Track][' + newRowIndex + '][artist]" placeholder="Artist" type="text" class="form-control" id="Track' + newRowIndex + 'Artist"></td>' +
+			'<td><input name="data[Track][' + newRowIndex + '][title]" placeholder="Title" type="text" class="form-control" id="Track' + newRowIndex + 'Title" required="required"></td>' +
+			'<td><input name="data[Track][' + newRowIndex + '][label]" class="form-control input-small" placeholder="Label" type="text" id="Track' + newRowIndex + 'Label"></td>' +
+			'<td><input name="data[Track][' + newRowIndex + '][length]" class="form-control input-mini" placeholder="00:00" type="text" id="Track' + newRowIndex + 'Length"></td>' +
+			'<td><input name="data[Track][' + newRowIndex + '][bpm_start]" class="form-control" input-mini" placeholder="BPM" type="text" id="Track' + newRowIndex + 'BpmStart"></td>' +
+			'<td><input name="data[Track][' + newRowIndex + '][key_start]" class="form-control" input-mini" placeholder="Key" type="text" id="Track' + newRowIndex + 'KeyStart"></td>' +
+			'<td><button type="button" class="btn btn-xs btn-danger removeRowButton"><span class="glyphicon glyphicon-remove-circle"></span></button></td>' +
 		'</tr>';
 	$('#editForm').find('tbody').append(newRow);
 }
 
-function removeTrackRow() {	// TODO: Remove the current row instead of the last row
-	$(this).closest('tr').remove();
+function removeTrack() {	
+	var trackID = $(this).closest('tr').find('input[id$="Id"]');
+	var confirm = window.confirm("Are you sure you want to delete this track? There is no undo.");
+	
+	if (confirm == true) {
+		if (trackID.length == 1) {
+		$.ajax({
+			type: "POST",
+			url: "/setlists/deletetrack/" + trackID.attr('value') + "/" + $(this).closest('table').data('editkey'),
+			success: removeTrackProcessResult(this) })
+			.fail(function() {
+				alert("Sorry, something went wrong and the track wasn't deleted");	});
+		}
+		else {
+			removeTrackRow(this);
+		}
+	}
+}
+
+var removeTrackProcessResult = function(row) {
+	return function(data, status, jqXHR) {
+		if (data == 1) {
+			removeTrackRow(row);
+		}
+		else {
+			alert("Sorry, something went wrong and the track wasn't deleted");
+		}
+	}
+}
+
+function removeTrackRow(row) {
+	$(row).closest('tr').remove();
 	onSortableUpdate(null, null);
 }
 

@@ -25,11 +25,11 @@
 		<td><?php echo $this->Form->input('Setlist.genre', array('label' => 'Genre')); ?></td>
 	</tr>
 	<tr>
-		<td><?php echo $this->Form->input('Setlist.master_bpm', array('label' => 'Master BPM', 'class' => 'input-mini', 'placeholder' => $setlist['Setlist']['suggested_bpm'])); ?></td>
+		<td><?php echo $this->Form->input('Setlist.master_bpm', array('label' => 'Master BPM', 'placeholder' => $setlist['Setlist']['suggested_bpm'])); ?></td>
 	</tr>
 </table>
 
-<table class="table table-striped table-bordered table-condensed" id="editForm">
+<table class="table table-striped table-bordered table-condensed" id="editForm" data-editkey="<?php echo h($setlist['Setlist']['private_key']); ?>">
 	<thead>
 		<tr>
 			<th>#</th>
@@ -87,7 +87,7 @@ $(document).ready(function () {
 	startSortable('#editForm');
 	
 	$('#addRowButton').on('click', addTrackRow);
-	$('.removeRowButton').on('click', removeTrackRow);
+	$('#editForm').on('click', '.removeRowButton', removeTrack);
 });
 //]]>
 </script>

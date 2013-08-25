@@ -96,9 +96,9 @@ class SetlistsController extends AppController {
 	    
 	    if ($this->request->is('post') || $this->request->is('put')) {
 	        $this->Setlist->id = $decryptedID;
-	        if ($this->Setlist->saveAssociated($this->request->data)) {
+	        if ($this->Setlist->saveAssociated($this->stripBlankPostData($this->request->data))) {
 	            $this->Session->setFlash('Your setlist has been updated', 'flash_success_dismissable');
-				$setlist = array_replace_recursive($setlist, $this->request->data);
+				$setlist = array_replace_recursive($setlist, $this->stripBlankPostData($this->request->data));
 	        } else {
 	            $this->Session->setFlash('Something went wrong and your setlist hasn\'t been updated', 'flash_danger_dismissable');
 	            $setlist = array_replace_recursive($setlist, $this->request->data);
@@ -138,7 +138,7 @@ class SetlistsController extends AppController {
 		    return $this->redirect(array('action' => 'view', $urlHash));
 	    }
 	
-	    if ($this->Setlist->delete($decryptedID, $cascade = true)) {
+	    if ($this->Setlist->delete($decryptedID, true)) {
 	        $this->Session->setFlash('Setlist "' . h($setlist['Setlist']['name']) . '" has been deleted', 'flash_success_dismissable');
 	        return $this->redirect(array('action' => 'index'));
 	    }
@@ -147,12 +147,43 @@ class SetlistsController extends AppController {
 		    return $this->redirect(array('action' => 'view', $urlHash));
 	    }
 	}
+
+	public function deletetrack($trackID = null, $privateKey = null) {
+		$this->autoRender = false;
+	
+		if ($this->request->is('get')) {
+			throw new MethodNotAllowedException();
+		}
+		if (!$trackID) {
+			throw new NotFoundException(__('Invalid track'));
+		}
+		elseif (!$privateKey) {
+			throw new NotFoundException(__('Invalid setlist Edit Key'));
+		}
+		
+//		$decryptedID = $this->Urlhash->decrypt($urlHash);
+		
+		$track = $this->Track->find('first', array(
+			'conditions' => array('Track.id' => $trackID),
+			'recursive' => 1));
+			
+		if ($track['Setlist']['private_key'] != $privateKey) {
+			throw new NotFoundException(__('Invalid setlist Edit Key'));
+		}
+		
+		if ($this->Track->delete($trackID, false)) {
+			return true;
+		}
+		else {
+		    return false;
+		}
+	}
 	
 	protected function stripBlankPostData($data) {	// Ensures only form data with rows that have a title filled in are passed on to be saved
 		$strippedData['Setlist'] = $data['Setlist'];
 		
 		foreach ($data['Track'] as $i => $track) {
-			if ($track['title']) {
+			if (strlen($track['title']) > 0) {
 				$strippedData['Track'][] = $data['Track'][$i];
 			}
 		}
@@ -168,6 +199,7 @@ class SetlistsController extends AppController {
 	}
 	
 	public function beforeFilter() {
+		$this->Security->unlockedActions = array('deletetrack');
     	$this->Security->unlockedFields = array('Track.setlist_order', 'Track.artist', 'Track.title', 'Track.label', 'Track.length', 'Track.bpm_start', 'Track.key_start');
 	}
 }
