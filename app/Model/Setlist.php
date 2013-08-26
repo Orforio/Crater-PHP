@@ -43,14 +43,6 @@ class Setlist extends AppModel {
 				'message' => 'Please input a 3-digit BPM.'
 			)
 		)
-        //,
-/*        'modified' => array(	// Not present in HTTP Request
-        	'rule' => 
-        ),*/
-/*        'public_key' => array(	// Not implemented yet
-        ),
-        'private_key' => array(
-        )*/
     );
     
     public $recursive = -1;
