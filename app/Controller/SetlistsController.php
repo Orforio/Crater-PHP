@@ -200,7 +200,7 @@ class SetlistsController extends AppController {
 	
 	public function beforeFilter() {
 		$this->Security->unlockedActions = array('deletetrack');
-    	$this->Security->unlockedFields = array('Track.setlist_order', 'Track.artist', 'Track.title', 'Track.label', 'Track.length', 'Track.bpm_start', 'Track.key_start');
+    	$this->Security->unlockedFields = array('Track.id', 'Track.setlist_order', 'Track.artist', 'Track.title', 'Track.label', 'Track.length', 'Track.bpm_start', 'Track.key_start');
 	}
 }
 ?>
