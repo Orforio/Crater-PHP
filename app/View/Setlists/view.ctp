@@ -50,7 +50,7 @@
 				} ?></td>
 			<td><?php echo h($track['key_start']); ?></td>
 			<td><?php if ($setlist['Setlist']['master_bpm'] && $track['key_start_modified']) {
-					echo h($track['key_start_modified']);
+					echo $this->Track->displayKey($track['bpm_difference'], $track['key_start_modified']);
 			} ?></td>
 			<td><?php echo h($track['key_notation_start']); ?></td>
 		</tr>
