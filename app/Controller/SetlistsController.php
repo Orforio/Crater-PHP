@@ -94,23 +94,29 @@ class SetlistsController extends AppController {
 		    return $this->redirect(array('action' => 'view', $urlHash));
 	    }
 	    
-	    if ($this->request->is('post') || $this->request->is('put')) {
-	        $this->Setlist->id = $decryptedID;
-	        if ($this->Setlist->saveAssociated($this->stripBlankPostData($this->request->data))) {
-	            $this->Session->setFlash('Your setlist has been updated', 'flash_success_dismissable');
-				$setlist = array_replace_recursive($setlist, $this->stripBlankPostData($this->request->data));
+		if ($this->request->is('post') || $this->request->is('put')) {
+			$this->Setlist->id = $decryptedID;
+			if ($this->Setlist->saveAssociated($this->stripBlankPostData($this->request->data))) {
+				$this->Session->setFlash('Your setlist has been updated', 'flash_success_dismissable');
+				
+				return $this->redirect(array('action' => 'edit', $urlHash, $privateKey));
 	        } else {
 	            $this->Session->setFlash('Something went wrong and your setlist hasn\'t been updated', 'flash_danger_dismissable');
-	            $setlist = array_replace_recursive($setlist, $this->request->data);
+	            
+	            //debug($setlist);
+				
+				$setlist = array_replace_recursive($setlist, $this->request->data);
+				usort($this->request->data['Track'], array($this, "sortOrder"));
+				usort($setlist['Track'], array($this, "sortOrder"));
+			//	debug($this->request->data);
 	        }
 	    }
 		
 		$setlist['Setlist']['suggested_bpm'] = $this->Setlist->calculateAverageBPM($setlist['Track']);
-		
 		$setlist['Setlist']['urlhash'] = $urlHash;
 		
 		$this->set('setlist', $setlist);
-	
+
 	    if (!$this->request->data) {
 	        $this->request->data = $setlist;
 	    }
@@ -198,7 +204,12 @@ class SetlistsController extends AppController {
 		return $this->Urlhash->encrypt($secretSeed);
 	}
 	
+	private function sortOrder($a, $b) {	// Used by usort to order tracks by their setlist order
+		return $a['setlist_order'] > $b['setlist_order'];
+	}
+	
 	public function beforeFilter() {
+		//$this->response->disableCache();
 		$this->Security->unlockedActions = array('deletetrack');
     	$this->Security->unlockedFields = array('Track.id', 'Track.setlist_order', 'Track.artist', 'Track.title', 'Track.label', 'Track.length', 'Track.bpm_start', 'Track.key_start');
 	}
