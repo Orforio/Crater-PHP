@@ -46,10 +46,6 @@ echo $this->Form->input('Setlist.id', array('type' => 'hidden'));
 			<p class="lead"><span class="glyphicon glyphicon-exclamation-sign"></span> <strong>Edit Key</strong></p>
 			In order to be able to edit this setlist in the future, please note down your Edit Key (<strong><?php echo h($setlist['Setlist']['private_key']); ?></strong>) or <strong><?php echo $this->Html->link('save this edit link', array('controller' => 'setlists', 'action' => 'edit', $setlist['Setlist']['urlhash'], $setlist['Setlist']['private_key']), array('class' => 'alert-link')); ?></strong>
 		</div>
-		<div class="alert alert-danger">
-			<p class="lead">Available actions</p>
-			<?php echo $this->Form->postLink('Delete Setlist', array('action' => 'delete', $setlist['Setlist']['urlhash'], $setlist['Setlist']['private_key']), array('confirm' => 'Are you sure you want to delete this setlist? There is no undo.', 'class' => 'btn btn-danger')); ?>
-		</div>
 	</div>
 </div>
 
@@ -90,6 +86,15 @@ echo $this->Form->input('Track.' . $i . '.setlist_order', array('type' => 'hidde
 				</tr>
 			</tbody>
 		</table>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="alert alert-danger">
+			<p class="lead">Available actions</p>
+			<?php echo $this->Form->postLink('Delete Setlist', array('action' => 'delete', $setlist['Setlist']['urlhash'], $setlist['Setlist']['private_key']), array('confirm' => 'Are you sure you want to delete this setlist? There is no undo.', 'class' => 'btn btn-danger')); ?>
+		</div>
 	</div>
 </div>
 <script type="text/javascript">

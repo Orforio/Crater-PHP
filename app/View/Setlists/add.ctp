@@ -64,7 +64,13 @@ echo $this->Form->create('Setlist', array(
 				</tr>
 			</thead>
 			<tbody>
-			<?php for ($i = 0; $i < 15; $i++): ?>
+			<?php $numberTracks = 10;
+					if (isset($this->data['Track'])) {
+						if (count($this->data['Track']) > 10) {
+							$numberTracks = count($this->data['Track']);
+						}
+					} ?>
+			<?php for ($i = 0; $i < $numberTracks; $i++): ?>
 				<tr>
 				<?php echo $this->Form->input('Track.' . $i . '.setlist_order', array('type' => 'hidden', 'value' => $i + 1)); ?>
 					<td class="draggable" style="white-space: nowrap;"><span class="glyphicon glyphicon-sort"></span> <label class="setlist_order"><?php echo $i + 1; ?></label></td>
