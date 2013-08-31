@@ -7,32 +7,26 @@ class Setlist extends AppModel {
 			)
 		);
 	public $validate = array(
-        'name' => array(
-            'rule' => array('maxLength', 255),
-            'required' => true,
-            'allowEmpty' => false,
-            'message' => 'Please keep your setlist name under 255 characters.'
-        ),
-        'author' => array(
-            'rule' => array('maxLength', 255),
-            'required' => true,
-            'allowEmpty' => false,
-            'message' => 'Please keep your author name under 255 characters.'
-        ),
-        'genre' => array(
-        	'genre-rule1' => array(
-        		'rule' => 'alphaNumeric',
-        		'required' => true,
-        		'allowEmpty' => true,
-        		'message' => 'Please only use alphanumeric characters in your genre.'
-        	),
-        	'genre-rule2' => array(
-        		'rule' => array('maxLength', 255),
-        		'message' => 'Please keep your genre name under 255 characters.'
-        	)
-        ),
-        'master_bpm' => array(
-        	'master_bpm_start_rule1' => array(
+		'name' => array(
+			'rule' => array('maxLength', 255),
+			'required' => true,
+			'allowEmpty' => false,
+			'message' => 'Please keep your setlist name under 255 characters.'
+		),
+		'author' => array(
+			'rule' => array('maxLength', 255),
+			'required' => true,
+			'allowEmpty' => false,
+			'message' => 'Please keep your author name under 255 characters.'
+		),
+		'genre' => array(
+			'rule' => array('maxLength', 255),
+			'required' => true,
+			'allowEmpty' => true,
+			'message' => 'Please keep your genre name under 255 characters.'
+		),
+		'master_bpm' => array(
+			'master_bpm_start_rule1' => array(
 				'rule' => 'numeric',
 				'required' => true,
 				'allowEmpty' => true,
@@ -43,11 +37,11 @@ class Setlist extends AppModel {
 				'message' => 'Please input a 3-digit BPM.'
 			)
 		)
-    );
-    
-    public $recursive = -1;
-    
-    public function calculateAverageBPM($data = null) {
+	);
+
+	public $recursive = -1;
+
+	public function calculateAverageBPM($data = null) {
     	if (!$data) {
 	    	return 0;
     	}

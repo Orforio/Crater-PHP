@@ -12,7 +12,7 @@ echo $this->Form->create('Setlist', array(
 		'class' => 'form-control',
 		'error' => array(
 			'attributes' => array(
-				'class' => 'alert alert-error'
+				'class' => 'alert alert-danger'
 			)
 		)
 	)
@@ -43,7 +43,7 @@ echo $this->Form->create('Setlist', array(
 	<div class="col-md-3">
 		<div class="alert alert-info">
 			<p class="lead">Required information</p>
-			<p>Only Setlist name and Track title are required fields</p>
+			<p>Only <em>Setlist name</em>, <em>Author name</em> and <em>Track title</em> are required fields</p>
 		</div>
 	</div>
 </div>
