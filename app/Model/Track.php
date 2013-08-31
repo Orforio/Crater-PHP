@@ -278,8 +278,13 @@ class Track extends AppModel {
 	}
 	
 	public function calculateBPMDifference($track, $masterBPM) {
-		if ($track['bpm_start']) {
-			$track['bpm_difference'] = round((($masterBPM - $track['bpm_start']) / $track['bpm_start']) * 100, 2);
+		if (isset($track['bpm_start'])) {
+			if ($track['bpm_start'] == 0) {
+				$track['bpm_difference'] = 0;
+			}
+			else {
+				$track['bpm_difference'] = round((($masterBPM - $track['bpm_start']) / $track['bpm_start']) * 100, 2);	
+			}
 		}
 		else {
 			$track['bpm_difference'] = false;

@@ -8,13 +8,13 @@ class TrackHelper extends AppHelper {
 		}
 		else {
 			if ($bpmDifference > 0) {
-				return ' <span class="track-bpm track-bpm-positive">+' . number_format($bpmDifference, 2) . '%</span>';
+				return ' <span class="text-info">+' . number_format($bpmDifference, 2) . '%</span>';
 			}
 			elseif ($bpmDifference < 0) {
-				return ' <span class="track-bpm track-bpm-negative">' . number_format($bpmDifference, 2) . '%</span>';
+				return ' <span class="text-info">' . number_format($bpmDifference, 2) . '%</span>';
 			}
 			else {
-				return ' <span class="track-bpm track-bpm-equal">=</span>';
+				return ' <span class="text-muted">=</span>';
 			}
 		}
 	}
@@ -27,13 +27,13 @@ class TrackHelper extends AppHelper {
 			$changeFactor = fmod(abs($bpmDifference) + 3, 6);
 			
 			if ($changeFactor >= 1.5 && $changeFactor <= 4.5) {
-				return '<span class="track-key track-key-good">' . $modifiedKey . '</span>';
+				return ' <span class="glyphicon glyphicon-arrow-right"></span> <span class="text-success">' . $modifiedKey . '</span>';
 			}
 			elseif ($changeFactor <= 0.5 || $changeFactor >= 5.5) {
-				return '<span class="track-key track-key-bad">' . $modifiedKey . '</span>';
+				return ' <span class="glyphicon glyphicon-arrow-right"></span> <span class="text-danger">' . $modifiedKey . '</span>';
 			}
 			else {
-				return '<span class="track-key track-key-borderline">' . $modifiedKey . '</span>';
+				return ' <span class="glyphicon glyphicon-arrow-right"></span> <span class="text-warning">' . $modifiedKey . '</span>';
 			}
 		}
 	}

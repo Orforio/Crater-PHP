@@ -1,3 +1,4 @@
 <div class="alert alert-info">
-	<strong>Heads up!</strong> <?php echo h($message); ?>
+	<p class="lead"><span class="glyphicon glyphicon-exclamation-sign"></span> <strong>Heads up!</strong></p>
+	<?php echo h($message); ?>
 </div>

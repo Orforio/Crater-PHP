@@ -75,7 +75,7 @@ class SetlistsController extends AppController {
 				$this->redirect(array('action' => 'view', $urlHash));
 	    	}
 	    	else {
-		    	$privateKey = $this->request->query['editkey'];
+	    		return $this->redirect(array('action' => 'edit', $urlHash, $this->request->query['editkey']));
 	    	}
 	    }
 	    

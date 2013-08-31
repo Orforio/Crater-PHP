@@ -68,5 +68,12 @@ class Setlist extends AppModel {
     	
     	return round($bpmTotal / $numberTracks);  
     }
+    
+    public function beforeSave($options = array()) {
+		//debug($this->data);
+	    
+	    //return false;
+	    return true;
+    }
 }
 ?>

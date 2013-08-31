@@ -29,7 +29,7 @@
 	<?php
 		echo $this->Html->meta('icon');
 		echo $this->Html->meta(array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0'));
-		echo $this->Html->css(array(/*'cake.generic', */'bootstrap'/*, 'ui-lightness/jquery-ui'*/), null, array('media' => 'screen'));
+		echo $this->Html->css(array('bootstrap'), null, array('media' => 'screen'));
 		echo $this->Html->script(array('jquery', 'jquery-ui', 'bootstrap', 'crater'));
 
 		echo $this->fetch('meta');
@@ -38,21 +38,57 @@
 	?>
 </head>
 <body>
-	<div class="container" id="container">
-		<div class="span12" id="header">
-			<h1>Crater <small>beta</small></h1>
-		</div>
-		<div class="span12" id="content">
-
-			<?php echo $this->Session->flash(); ?>
-
-			<?php echo $this->fetch('content'); ?>
-		</div>
-		<div class="span12" id="footer">
-			<p>DEVELOPMENT VERSION</p>
+	<div class="navbar navbar-default navbar-static-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">Crater</a>
+			</div>
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li<?php if($this->params['controller'] == 'pages' && $this->params['pass'][0] == 'home') { echo ' class="active"'; } ?>><a href="/">Home</a></li>
+					<li<?php if($this->params['controller'] == 'setlists' && $this->action == 'index') { echo ' class="active"'; } ?>><a href="/setlists">Setlists</a></li>
+					<li<?php if($this->params['controller'] == 'setlists' && $this->action == 'add') { echo ' class="active"'; } ?>><a href="/setlists/add">Add</a></li>
+					<?php if($this->params['controller'] == 'setlists' && $this->action == 'view'): ?>
+					<li class="active"><?php echo $this->Html->link('View', array('controller' => 'setlists', 'action' => 'view', $this->params['pass'][0])); ?></li>
+					<?php elseif($this->params['controller'] == 'setlists' && $this->action == 'edit'): ?>
+					<li><?php echo $this->Html->link('View', array('controller' => 'setlists', 'action' => 'view', $this->params['pass'][0])); ?></li>
+					<?php else: ?>
+					<li class="navbar-text">View</li>
+					<?php endif; ?>
+					<?php if($this->params['controller'] == 'setlists' && $this->action == 'edit'): ?>
+					<li class="active"><?php echo $this->Html->link('Edit', array('controller' => 'setlists', 'action' => 'edit', $this->params['pass'][0], $this->params['pass'][1])); ?></li>
+					<?php else: ?>
+					<li class="navbar-text">Edit</li>
+					<?php endif; ?>
+				</ul>
+			</div>
 		</div>
 	</div>
-	<?php echo $this->element('sql_dump'); 
+    
+	<div class="jumbotron">
+		<div class="container">
+			<h1>Crater<small>alpha</small></h1>
+			<p>Find a bug? Want a new feature? Please <a href="https://github.com/PkerUNO/Crater/issues">let me know on GitHub</a>. <strong>Please note</strong> that Crater is a work-in-progress and data may be modified or removed at any time.</p>
+		</div>
+	</div>
+	
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<?php echo $this->Session->flash(); ?>
+			</div>
+		</div>
+		<?php echo $this->fetch('content'); ?>
+		<footer>
+			<p>&copy; <a href="http://www.sblorgh.org">Richard Whittaker</a> | Version "Andromeda"</p>
+		</footer>
+	</div>
+	<?php //echo $this->element('sql_dump'); 
 		echo $this->Js->writeBuffer();
 	?>
 </body>
