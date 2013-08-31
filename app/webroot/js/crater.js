@@ -11,9 +11,10 @@ function startSortable(table) {
 			var $helper = tr.clone();
 			$helper.children().each(function(index) {
 				// Set helper cell sizes to match the original sizes
-				$(this).width($originals.eq(index).width());
+				$(this).width($originals.eq(index).outerWidth());
 			});
 			$helper.css({"background-color": "#cccccc"});	// TODO: Add this to site CSS instead
+				
 			return $helper;
 		},
 		forcePlaceholderSize: true,
@@ -48,26 +49,26 @@ function onSortableUpdate(event, ui) {	// Runs every time an item in a sortable 
 
 function updateSort(currentTrackIndex, currentRow) {	// Goes through each row in order and updates its sort index
 	var currentTrackOrder = currentTrackIndex + 1;
-	$(currentRow).find('td > span > .setlist_order').html(' ' + currentTrackOrder);
+	$(currentRow).find('td > label.setlist_order').html(currentTrackOrder);
 	$(currentRow).find('input[id$="SetlistOrder"]').attr('value', currentTrackOrder);
 }
 
 function addTrackRow() {	// Add a new row to the end of the form
 	var numberRows = $('#editForm').find('tbody > tr').length;
-	var newRowNumber = numberRows + 1;
-	var newRowIndex = numberRows;
+	var newRowNumber = numberRows;
+	var newRowIndex = numberRows - 1;
 	var newRow = '<tr>' +
 			'<input type="hidden" name="data[Track][' + newRowIndex + '][setlist_order]" value="' + newRowNumber + '" id="Track' + newRowIndex + 'SetlistOrder">' +
-			'<td class="draggable"><span class="glyphicon glyphicon-sort"><label class="setlist_order"> ' + newRowNumber + '</label></span></td>' +
-			'<td><input name="data[Track][' + newRowIndex + '][artist]" placeholder="Artist" type="text" class="form-control" id="Track' + newRowIndex + 'Artist"></td>' +
-			'<td><input name="data[Track][' + newRowIndex + '][title]" placeholder="Title" type="text" class="form-control" id="Track' + newRowIndex + 'Title" required="required"></td>' +
-			'<td><input name="data[Track][' + newRowIndex + '][label]" class="form-control input-small" placeholder="Label" type="text" id="Track' + newRowIndex + 'Label"></td>' +
-			'<td><input name="data[Track][' + newRowIndex + '][length]" class="form-control input-mini" placeholder="00:00" type="text" id="Track' + newRowIndex + 'Length"></td>' +
-			'<td><input name="data[Track][' + newRowIndex + '][bpm_start]" class="form-control" input-mini" placeholder="BPM" type="text" id="Track' + newRowIndex + 'BpmStart"></td>' +
-			'<td><input name="data[Track][' + newRowIndex + '][key_start]" class="form-control" input-mini" placeholder="Key" type="text" id="Track' + newRowIndex + 'KeyStart"></td>' +
-			'<td><button type="button" class="btn btn-xs btn-danger removeRowButton"><span class="glyphicon glyphicon-remove-circle"></span></button></td>' +
+			'<td class="draggable" style="white-space: nowrap;"><span class="glyphicon glyphicon-sort"></span> <label class="setlist_order">' + newRowNumber + '</label></td>' +
+			'<td><input name="data[Track][' + newRowIndex + '][artist]" placeholder="Artist" maxlength="255" type="text" class="form-control" id="Track' + newRowIndex + 'Artist"></td>' +
+			'<td><input name="data[Track][' + newRowIndex + '][title]" placeholder="Title" maxlength="255" type="text" class="form-control" id="Track' + newRowIndex + 'Title" required="required"></td>' +
+			'<td><input name="data[Track][' + newRowIndex + '][label]" class="form-control" maxlength="255" placeholder="Label" type="text" id="Track' + newRowIndex + 'Label"></td>' +
+			'<td><input name="data[Track][' + newRowIndex + '][length]" class="form-control" placeholder="00:00" type="text" id="Track' + newRowIndex + 'Length"></td>' +
+			'<td><input name="data[Track][' + newRowIndex + '][bpm_start]" class="form-control" placeholder="BPM" type="number" id="Track' + newRowIndex + 'BpmStart"></td>' +
+			'<td><input name="data[Track][' + newRowIndex + '][key_start]" class="form-control" maxlength="3" placeholder="Key" type="text" id="Track' + newRowIndex + 'KeyStart"></td>' +
+			'<td><button type="button" class="btn btn-danger removeRowButton"><span class="glyphicon glyphicon-remove-circle"></span></button></td>' +
 		'</tr>';
-	$('#editForm').find('tbody').append(newRow);
+	$('#editForm').find('tbody > tr').last().before(newRow);
 }
 
 function removeTrack() {	
