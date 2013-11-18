@@ -21,7 +21,7 @@
 			</tr>
 			<tr>
 				<td><strong>Master BPM</strong></td>
-				<td><?php echo $this->Track->displayBPM($setlist['Setlist']['master_bpm']); ?></td>
+				<td><?php echo h($setlist['Setlist']['master_bpm']); ?></td>
 			</tr>
 		</table>
 	</div>
@@ -65,12 +65,11 @@
 					<td><?php echo h($track['artist']) . " - " . h($track['title']); ?></td>
 					<td><?php echo h($track['label']); ?></td>
 					<td><?php echo h($track['length']); ?></td>
-					<td><?php
+					<td><?php echo h($track['bpm_start']);
 						if (isset($setlist['Setlist']['master_bpm']) && isset($track['bpm_difference'])) {
-							echo $this->Track->displayBPM($track['bpm_start'], $track['bpm_difference']);
-						} else {
-							echo $this->Track->displayBPM($track['bpm_start']);
-						} ?></td>
+							echo $this->Track->displayBPM($track['bpm_difference']);
+						}
+						?></td>
 					<td><?php echo h($track['key_start']);
 							if (isset($setlist['Setlist']['master_bpm']) && isset($track['key_start_modified'])) {
 								echo $this->Track->displayKey($track['bpm_difference'], $track['key_start_modified']); } ?></td>

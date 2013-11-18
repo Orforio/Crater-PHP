@@ -2,21 +2,17 @@
 App::uses('AppHelper', 'View/Helper');
 
 class TrackHelper extends AppHelper {
-	var $helpers = array('Number');
 
-	public function displayBPM($bpm = null, $bpmDifference = null) {	// Formats supplied BPM difference according to +/-
-		if ($bpm && is_numeric($bpm) && $bpmDifference === null) {
-			return $this->Number->precision($bpm, 2);
-		}
-		elseif ($bpm && is_numeric($bpm) && $bpmDifference !== null && is_numeric($bpmDifference)) {
+	public function displayBPM($bpmDifference = null) {	// Formats supplied BPM difference according to +/-
+		if ($bpmDifference !== null && is_numeric($bpmDifference)) {
 			if ($bpmDifference > 0) {
-				return $this->Number->precision($bpm, 2) . ' <span class="text-info">+' . number_format($bpmDifference, 2) . '%</span>';
+				return ' <span class="text-info">+' . number_format($bpmDifference, 2) . '%</span>';
 			}
 			elseif ($bpmDifference < 0) {
-				return $this->Number->precision($bpm, 2) . ' <span class="text-info">' . number_format($bpmDifference, 2) . '%</span>';
+				return ' <span class="text-info">' . number_format($bpmDifference, 2) . '%</span>';
 			}
 			else {
-				return $this->Number->precision($bpm, 2) . ' <span class="text-muted">=</span>';
+				return ' <span class="text-muted">=</span>';
 			}
 		}
 		else {
