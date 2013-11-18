@@ -29,11 +29,11 @@ class SetlistTest extends CakeTestCase {
 		debug($trackGroupA);
 		debug($trackGroupF);
 			
-		$this->assertEquals(14000, $this->Setlist->calculateAverageBPM($trackGroupA['Track']));
-		$this->assertEquals(17880, $this->Setlist->calculateAverageBPM($trackGroupB['Track']));
-		$this->assertEquals(14667, $this->Setlist->calculateAverageBPM($trackGroupC['Track']));
+		$this->assertEquals(140, $this->Setlist->calculateAverageBPM($trackGroupA['Track']));
+		$this->assertEquals(179, $this->Setlist->calculateAverageBPM($trackGroupB['Track']));
+		$this->assertEquals(147, $this->Setlist->calculateAverageBPM($trackGroupC['Track']));
 		$this->assertEquals(0, $this->Setlist->calculateAverageBPM($trackGroupD['Track']));
-		$this->assertEquals(14126, $this->Setlist->calculateAverageBPM($trackGroupF['Track']));
+		$this->assertEquals(141, $this->Setlist->calculateAverageBPM($trackGroupF['Track']));
 		$this->assertEquals(0, $this->Setlist->calculateAverageBPM());
 	}
 }

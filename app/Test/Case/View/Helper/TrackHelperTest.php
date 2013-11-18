@@ -15,9 +15,9 @@ class TrackHelperTest extends CakeTestCase {
 
 	public function testDisplayBPM() {
 		$this->assertEquals('', $this->Track->displayBPM());
-		$this->assertEquals('140.00 <span class="text-muted">=</span>', $this->Track->displayBPM(14000, 0));
-		$this->assertEquals('136.50 <span class="text-info">+2.36%</span>', $this->Track->displayBPM(13650, 2.36));
-		$this->assertEquals('179.97 <span class="text-info">-5.00%</span>', $this->Track->displayBPM(17997, -5));
+		$this->assertEquals('140.00 <span class="text-muted">=</span>', $this->Track->displayBPM(140.00, 0));
+		$this->assertEquals('136.50 <span class="text-info">+2.36%</span>', $this->Track->displayBPM(136.50, 2.36));
+		$this->assertEquals('179.97 <span class="text-info">-5.00%</span>', $this->Track->displayBPM(179.97, -5));
 		$this->assertEquals('', $this->Track->displayBPM('invalid'));
 	}
 	
