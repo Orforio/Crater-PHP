@@ -36,5 +36,15 @@ class SetlistTest extends CakeTestCase {
 		$this->assertEquals(141, $this->Setlist->calculateAverageBPM($trackGroupF['Track']));
 		$this->assertEquals(0, $this->Setlist->calculateAverageBPM());
 	}
+	
+	public function testBSConvertBPMStorable() {
+		$method = new ReflectionMethod('Setlist', 'bsConvertBPMStorable');
+		$method->setAccessible(true);
+		
+		$this->assertEquals(100, $method->invoke(new Setlist(), 1));
+		$this->assertEquals(57300, $method->invoke(new Setlist(), 573));
+		$this->assertEquals(12345, $method->invoke(new Setlist(), 123.45));
+		$this->assertEquals(14050, $method->invoke(new Setlist(), 140.5));
+	}
 }
 ?>
