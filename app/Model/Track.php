@@ -45,10 +45,10 @@ class Track extends AppModel {
 				'rule' => '/(?:\A\d{1,3}\.\d{1,2}\z|\A\d{1,3}\z)/',
 				'required' => true,
 				'allowEmpty' => true,
-				'message' => 'Please enter a BPM with maximum 2 decimal places.'
+				'message' => 'Please enter a BPM between 1 and 999.99, maximum 2 decimal places.'
 			),
 			'bpm_start_rule2' => array(
-				'rule' => array('maxLength', 5),
+				'rule' => array('maxLength', 6),
 				'message' => 'Please enter a BPM below 999.99.'
 			)
 		),
@@ -57,10 +57,10 @@ class Track extends AppModel {
 				'rule' => '/(?:\A\d{1,3}\.\d{1,2}\z|\A\d{1,3}\z)/',
 				'required' => false,
 				'allowEmpty' => true,
-				'message' => 'Please enter a BPM with maximum 2 decimal places.'
+				'message' => 'Please enter a BPM between 1 and 999.99, maximum 2 decimal places.'
 			),
 			'bpm_end_rule2' => array(
-				'rule' => array('maxLength', 5),
+				'rule' => array('maxLength', 6),
 				'message' => 'Please enter a BPM below 999.99.'
 			)
 		),
