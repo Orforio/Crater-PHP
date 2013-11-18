@@ -27,14 +27,14 @@ class Setlist extends AppModel {
 		),
 		'master_bpm' => array(
 			'master_bpm_start_rule1' => array(
-				'rule' => 'numeric',
+				'rule' => '/(?:\A\d{1,3}\.\d{1,2}\z|\A\d{1,3}\z)/',
 				'required' => true,
 				'allowEmpty' => true,
-				'message' => 'Please input a number for the Master BPM.'
+				'message' => 'Please enter a BPM with maximum 2 decimal places.'
 			),
 			'master_bpm_start_rule2' => array(
-				'rule' => array('maxLength', 3),
-				'message' => 'Please input a 3-digit BPM.'
+				'rule' => array('maxLength', 5),
+				'message' => 'Please enter a BPM below 999.99.'
 			)
 		)
 	);
@@ -42,7 +42,7 @@ class Setlist extends AppModel {
 	public $recursive = -1;
 
 	public function calculateAverageBPM($data = null) {
-    	if (!$data) {
+    	if (!isset($data)) {
 	    	return 0;
     	}
     	
@@ -50,7 +50,7 @@ class Setlist extends AppModel {
     	$numberTracks = 0;
     	
     	foreach ($data as $track) {
-	    	if ($track['bpm_start']) {
+	    	if (floatval($track['bpm_start'])) {
 		    	$numberTracks++;
 		    	$bpmTotal += $track['bpm_start'];
 	    	}
@@ -69,20 +69,6 @@ class Setlist extends AppModel {
 	    
 	    return true;
     }
-    
-    public function afterFind($results, $primary = false) {
-		$results = $this->afConvertBPM($results);
-		
-		return $results;
-	}
-	
-	protected function afConvertBPM($results) {
-		foreach ($results as $i => $result) {
-			$results[$i]['Setlist']['master_bpm'] = $this->afConvertBPMReadable($result['Setlist']['master_bpm']);
-		}
-		
-		return $results;
-	}
 
 }
 ?>

@@ -42,26 +42,26 @@ class Track extends AppModel {
 		),
 		'bpm_start' => array(
 			'bpm_start_rule1' => array(
-				'rule' => 'naturalNumber',
+				'rule' => '/(?:\A\d{1,3}\.\d{1,2}\z|\A\d{1,3}\z)/',
 				'required' => true,
 				'allowEmpty' => true,
-				'message' => 'Please enter a BPM between 1 and 999.'
+				'message' => 'Please enter a BPM with maximum 2 decimal places.'
 			),
 			'bpm_start_rule2' => array(
-				'rule' => array('maxLength', 3),
-				'message' => 'Please enter a BPM below 999.'
+				'rule' => array('maxLength', 5),
+				'message' => 'Please enter a BPM below 999.99.'
 			)
 		),
 		'bpm_end' => array(
 			'bpm_end_rule1' => array(
-				'rule' => 'naturalNumber',
+				'rule' => '/(?:\A\d{1,3}\.\d{1,2}\z|\A\d{1,3}\z)/',
 				'required' => false,
 				'allowEmpty' => true,
-				'message' => 'Please enter a BPM between 1 and 999.'
+				'message' => 'Please enter a BPM with maximum 2 decimal places.'
 			),
 			'bpm_end_rule2' => array(
-				'rule' => array('maxLength', 3),
-				'message' => 'Please enter a BPM below 999.'
+				'rule' => array('maxLength', 5),
+				'message' => 'Please enter a BPM below 999.99.'
 			)
 		),
 		'key_start' => array(
@@ -270,7 +270,6 @@ class Track extends AppModel {
 	public function afterFind($results, $primary = false) {	// Turns database 00:00:00 into 00:00 for user input
 //		debug($results);
 		$results = $this->afConvertTrackLength($results);
-		$results = $this->afConvertBPM($results);
 		
 		return $results;
 	}
@@ -339,15 +338,6 @@ class Track extends AppModel {
 			if (isset($result['Track']['length'])) {
 				$results[$i]['Track']['length'] = date('i:s', strtotime($result['Track']['length']));
 			}
-		}
-		
-		return $results;
-	}
-	
-	protected function afConvertBPM($results) {
-		foreach ($results as $i => $result) {
-			$results[$i]['Track']['bpm_start'] = $this->afConvertBPMReadable($result['Track']['bpm_start']);
-			$results[$i]['Track']['bpm_end'] = $this->afConvertBPMReadable($result['Track']['bpm_end']);
 		}
 		
 		return $results;
