@@ -269,11 +269,9 @@ class Track extends AppModel {
 	
 	public function afterFind($results, $primary = false) {	// Turns database 00:00:00 into 00:00 for user input
 //		debug($results);
-		foreach ($results as $i => $result) {
-			if (isset($result['Track']['length'])) {
-				$results[$i]['Track']['length'] = date('i:s', strtotime($result['Track']['length']));
-			}
-		}
+		$results = $this->afConvertTrackLength($results);
+		$results = $this->afConvertBPM($results);
+		
 		return $results;
 	}
 	
@@ -334,6 +332,25 @@ class Track extends AppModel {
 		else {
 			return '';
 		}
+	}
+	
+	protected function afConvertTrackLength($results) {
+		foreach ($results as $i => $result) {
+			if (isset($result['Track']['length'])) {
+				$results[$i]['Track']['length'] = date('i:s', strtotime($result['Track']['length']));
+			}
+		}
+		
+		return $results;
+	}
+	
+	protected function afConvertBPM($results) {
+		foreach ($results as $i => $result) {
+			$results[$i]['Track']['bpm_start'] = $this->afConvertBPMReadable($result['Track']['bpm_start']);
+			$results[$i]['Track']['bpm_end'] = $this->afConvertBPMReadable($result['Track']['bpm_end']);
+		}
+		
+		return $results;
 	}
 }
 ?>

@@ -32,4 +32,13 @@ App::uses('Model', 'Model');
  * @package       app.Model
  */
 class AppModel extends Model {
+
+	// Convert the database's xxxyy BPM format into a readable xxx.yy format
+	protected function afConvertBPMReadable($bpm = null) {
+		if (isset($bpm) && is_numeric($bpm)) {
+			return $bpm / 100;
+		} else {
+			return 0;
+		}
+	}
 }

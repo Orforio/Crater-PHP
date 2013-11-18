@@ -65,9 +65,24 @@ class Setlist extends AppModel {
     
     public function beforeSave($options = array()) {
 		//debug($this->data);
-	    
 	    //return false;
+	    
 	    return true;
     }
+    
+    public function afterFind($results, $primary = false) {
+		$results = $this->afConvertBPM($results);
+		
+		return $results;
+	}
+	
+	protected function afConvertBPM($results) {
+		foreach ($results as $i => $result) {
+			$results[$i]['Setlist']['master_bpm'] = $this->afConvertBPMReadable($result['Setlist']['master_bpm']);
+		}
+		
+		return $results;
+	}
+
 }
 ?>
