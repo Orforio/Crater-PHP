@@ -40,6 +40,7 @@ class Setlist extends AppModel {
 	);
 
 	public $recursive = -1;
+	public $actsAs = array('Containable');
 
 	public function calculateAverageBPM($data = null) {
     	if (!isset($data)) {

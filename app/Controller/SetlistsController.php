@@ -1,9 +1,9 @@
 <?php
 class SetlistsController extends AppController {
 	public $helpers = array('Html', 'Form', 'Session', 'Time', 'Track', 'Js' => array('Jquery'));
-    public $components = array('Session', 'Security', 'Urlhash');
-    public $uses = array('Setlist', 'Track');
-	
+	public $components = array('Session', 'Security', 'Urlhash');
+	public $uses = array('Setlist', 'Track', 'Key');
+
 	public function index() {
 		$setlists = $this->Setlist->find('all');
 		
@@ -19,39 +19,45 @@ class SetlistsController extends AppController {
 		
         $this->set('setlists', $setlists);
     }
-    
-    public function view($urlHash = null) {	// Displays the requested setlist
-        if (!$urlHash) {
-            throw new NotFoundException(__('No setlist specified'));
-        }
-        
-        $id = $this->Urlhash->decrypt($urlHash);
 
-        $setlist = $this->Setlist->find('first', array(
-        	'conditions' => array('Setlist.id' => $id),
-        	'recursive' => 1));
-        
-        if (!$setlist) {
-            throw new NotFoundException(__('Invalid setlist'));
-        }
-        
-        $setlist['Setlist']['urlhash'] = $urlHash;
-        
-		foreach ($setlist['Track'] as $i => $track) {	// Appends each key's notational form to the data array
-			$setlist['Track'][$i]['key_notation_start'] = $this->Track->getKeyNotation($track['key_start']);
+	public function view($urlHash = null) {	// Displays the requested setlist
+		if (!$urlHash) {
+			throw new NotFoundException(__('No setlist specified'));
 		}
-		
+
+		$id = $this->Urlhash->decrypt($urlHash);
+
+		$setlist = $this->Setlist->find('first', array(
+			'conditions' => array(
+				'Setlist.id' => $id
+				),
+			'contain' => array(
+				'Track',
+				'Track.KeyStart',
+				'Track.KeyEnd'
+				)
+			)
+		);
+
+        if (!$setlist) {
+			throw new NotFoundException(__('Invalid setlist'));
+		}
+
+		$setlist['Setlist']['urlhash'] = $urlHash;
+
 		if ($setlist['Setlist']['master_bpm']) {
 			foreach ($setlist['Track'] as $i => $track) {
 				$track = $this->Track->calculateBPMDifference($track, $setlist['Setlist']['master_bpm']);
 				$setlist['Track'][$i] = $this->Track->calculateKeyDifference($track);
+				
+				$setlist['Track'][$i]['key_start_modified'] = $this->Key->findById($setlist['Track'][$i]['key_start_modified']);
 			}
 		}
-		
+	//	debug($setlist);
 		$this->set('setlist', $setlist);
-    }
+	}
     
-    public function add() {	// Adds a new setlist
+	public function add() {	// Adds a new setlist
         if ($this->request->is('post')) {
             $this->Setlist->create();
             $this->request->data['Setlist']['private_key'] = $this->generatePrivateKey();
@@ -67,7 +73,7 @@ class SetlistsController extends AppController {
         }
     }
     
-    public function edit($urlHash = null, $privateKey = null) {	// Edits an existing setlist
+	public function edit($urlHash = null, $privateKey = null) {	// Edits an existing setlist
 	    if (!$urlHash) {
 	        throw new NotFoundException(__('Invalid setlist'));
 	    }

@@ -1,6 +1,16 @@
 <?php
 class Track extends AppModel {
-	public $belongsTo = 'Setlist';
+	public $belongsTo = array(
+		'Setlist',
+		'KeyStart' => array(
+			'className' => 'Key',
+			'foreignKey' => 'key_start'
+		),
+		'KeyEnd' => array(
+			'className' => 'Key',
+			'foreignKey' => 'key_end'
+		)
+	);
 	public $helpers = array('Time');
 	public $recursive = -1;
 	public $validate = array(
@@ -296,26 +306,24 @@ class Track extends AppModel {
 			if ($roundedBPMDifference >= 3) {	// Tone goes up
 				$toneDifference = intval(($roundedBPMDifference + 3) / 6);
 				
-				$keyCode = preg_split('/(\D)/', $track['key_start'], -1, PREG_SPLIT_DELIM_CAPTURE);
-				$newKeyCodeNumber = (($keyCode[0] + (7 * $toneDifference)) % 12);
-				if ($newKeyCodeNumber == 0) {
-					$newKeyCodeNumber = 12;
+				$newKey = (($track['key_start'] + (14 * $toneDifference)) % 24);
+				if ($newKey == 0) {
+					$newKey = 24;
 				}
-				$track['key_start_modified'] = $newKeyCodeNumber . $keyCode[1];
+				$track['key_start_modified'] = $newKey;
 			}
 			elseif ($roundedBPMDifference <= -3) {	// Tone goes down
 				$toneDifference = abs(intval(($roundedBPMDifference - 3) / 6));
 				
-				$keyCode = preg_split('/(\D)/', $track['key_start'], -1, PREG_SPLIT_DELIM_CAPTURE);
-				$newKeyCodeNumber = (($keyCode[0] - (7 * $toneDifference)) % 12);
-				if ($newKeyCodeNumber < 0) {
-					$newKeyCodeNumber += 12;
+				$newKey = (($track['key_start'] - (14 * $toneDifference)) % 24);
+				if ($newKey < 0) {
+					$newKey += 24;
 				}
 				
-				if ($newKeyCodeNumber == 0) {
-					$newKeyCodeNumber = 12;
+				if ($newKey == 0) {
+					$newKey = 24;
 				}
-				$track['key_start_modified'] = $newKeyCodeNumber . $keyCode[1];
+				$track['key_start_modified'] = $newKey;
 			}
 			else {
 				$track['key_start_modified'] = $track['key_start'];
@@ -324,12 +332,12 @@ class Track extends AppModel {
 			return $track;
 		}
 		elseif ($track) {
-			$track['key_start_modified'] = '';
+			$track['key_start_modified'] = 0;
 			
 			return $track;
 		}
 		else {
-			return '';
+			return 0;
 		}
 	}
 	

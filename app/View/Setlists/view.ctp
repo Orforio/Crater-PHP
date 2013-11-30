@@ -54,8 +54,9 @@
 					<th>Label</th>
 					<th>Length</th>
 					<th>BPM</th>
-					<th>Key Code</th>
-					<th>Key N.</th>
+					<th>Key (Camelot)</th>
+					<th>Key (OK)</th>
+					<th>Key (Note)</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -70,10 +71,11 @@
 							echo $this->Track->displayBPM($track['bpm_difference']);
 						}
 						?></td>
-					<td><?php echo h($track['key_start']);
+					<td><?php echo h($track['KeyStart']['camelot']);
 							if (isset($setlist['Setlist']['master_bpm']) && isset($track['key_start_modified'])) {
-								echo $this->Track->displayKey($track['bpm_difference'], $track['key_start_modified']); } ?></td>
-					<td><?php echo h($track['key_notation_start']); ?></td>
+								echo $this->Track->displayKey($track['bpm_difference'], $track['key_start_modified']['Key']['camelot']); } ?></td>
+					<td><?php echo h($track['KeyStart']['openkey']); ?></td>
+					<td><?php echo h($track['KeyStart']['notation']) . " " . h($track['KeyStart']['notation_enharmonic']); ?></td>
 				</tr>
 		<?php endforeach; ?>
 			</tbody>

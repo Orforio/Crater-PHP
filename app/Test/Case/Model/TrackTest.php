@@ -3,12 +3,19 @@ App::uses('Setlist', 'Model');
 App::uses('Track', 'Model');
 
 class TrackTest extends CakeTestCase {
-	public $fixtures = array('app.setlist', 'app.track');
+	public $fixtures = array('app.setlist', 'app.track', 'app.key');
 	
 	public function setUp() {
 		parent::setUp();
 		$this->Setlist = ClassRegistry::init('Setlist');
 		$this->Track = ClassRegistry::init('Track');
+	}
+	
+	public function tearDown() {
+		unset($this->Setlist);
+		unset($this->Track);
+
+		parent::tearDown();
 	}
 	
 	public function testGetKeyNotation() {
@@ -32,7 +39,7 @@ class TrackTest extends CakeTestCase {
 			'conditions' => array('Setlist.id' => 2),
 			'recursive' => 1));
 			
-		debug($trackGroupB);
+	//	debug($trackGroupB);
 		
 		$testTrackArray0 = $this->Track->calculateBPMDifference($trackGroupB['Track'][0], $trackGroupB['Setlist']['master_bpm']);
 		$testTrackArray1 = $this->Track->calculateBPMDifference($trackGroupB['Track'][1], $trackGroupB['Setlist']['master_bpm']);
@@ -51,12 +58,20 @@ class TrackTest extends CakeTestCase {
 	public function testCalculateKeyDifference() {
 		$trackGroupE = $this->Setlist->find('first', array(
 			'conditions' => array('Setlist.id' => 5),
-			'recursive' => 1));
+			'contain' => array(
+        		'Track',
+        		'Track.KeyStart',
+        		'Track.KeyEnd'
+				)
+        	)
+        );
 			
-		debug($trackGroupE);
+	//	debug($trackGroupE);
 		
 		$testTrackArray0 = $this->Track->calculateBPMDifference($trackGroupE['Track'][0], $trackGroupE['Setlist']['master_bpm']);
+		debug($testTrackArray0);
 		$testTrackArray0 = $this->Track->calculateKeyDifference($testTrackArray0);
+		debug($testTrackArray0);
 		
 		$testTrackArray1 = $this->Track->calculateBPMDifference($trackGroupE['Track'][1], $trackGroupE['Setlist']['master_bpm']);
 		$testTrackArray1 = $this->Track->calculateKeyDifference($testTrackArray1);
@@ -75,18 +90,16 @@ class TrackTest extends CakeTestCase {
 		
 		$testTrackArray6 = $this->Track->calculateBPMDifference($trackGroupE['Track'][6], $trackGroupE['Setlist']['master_bpm']);
 		$testTrackArray6 = $this->Track->calculateKeyDifference($testTrackArray6);
-
-		debug($testTrackArray5);
 		
 		$this->assertArrayHasKey('key_start_modified', $testTrackArray0);
-		$this->assertEquals('10A', $testTrackArray0['key_start_modified']);	// 156 -> 162 BPM, one tone higher
-		$this->assertEquals('5B', $testTrackArray1['key_start_modified']);	// 161 -> 162 BPM, no change
-		$this->assertEquals('7A', $testTrackArray2['key_start_modified']);	// 162 -> 162 BPM, no change
-		$this->assertEquals('2B', $testTrackArray3['key_start_modified']);	// 168 -> 162 BPM, one tone lower
-		$this->assertEquals('9A', $testTrackArray4['key_start_modified']);	// 180 -> 162 BPM, two tones lower
-		$this->assertEquals('', $testTrackArray5['key_start_modified']);	// No BPM given, empty result
-		$this->assertEquals('', $this->Track->calculateKeyDifference());	// Invalid input, empty result
-		$this->assertEquals('1B', $testTrackArray6['key_start_modified']);	// Test wrap-around issue
+		$this->assertEquals(19, $testTrackArray0['key_start_modified']);	// 156 -> 162 BPM, one tone higher
+		$this->assertEquals(10, $testTrackArray1['key_start_modified']);	// 161 -> 162 BPM, no change
+		$this->assertEquals(13, $testTrackArray2['key_start_modified']);	// 162 -> 162 BPM, no change
+		$this->assertEquals(4, $testTrackArray3['key_start_modified']);	// 168 -> 162 BPM, one tone lower
+		$this->assertEquals(17, $testTrackArray4['key_start_modified']);	// 180 -> 162 BPM, two tones lower
+		$this->assertEquals(0, $testTrackArray5['key_start_modified']);	// No BPM given, empty result
+		$this->assertEquals(0, $this->Track->calculateKeyDifference());	// Invalid input, empty result
+		$this->assertEquals(2, $testTrackArray6['key_start_modified']);	// Test wrap-around issue
 	}
 }
 ?>
