@@ -71,11 +71,11 @@
 							echo $this->Track->displayBPM($track['bpm_difference']);
 						}
 						?></td>
-					<td><?php echo h($track['KeyStart']['camelot']);
+					<td><?php echo isset($track['KeyStart']['camelot']) ? h($track['KeyStart']['camelot']) : "";
 							if (isset($setlist['Setlist']['master_bpm']) && isset($track['key_start_modified'])) {
 								echo $this->Track->displayKey($track['bpm_difference'], $track['key_start_modified']['Key']['camelot']); } ?></td>
-					<td><?php echo h($track['KeyStart']['openkey']); ?></td>
-					<td><?php echo h($track['KeyStart']['notation']) . " " . h($track['KeyStart']['notation_enharmonic']); ?></td>
+					<td><?php echo isset($track['KeyStart']['openkey']) ? h($track['KeyStart']['openkey']) : ""; ?></td>
+					<td><?php echo isset($track['KeyStart']['notation']) ? h($track['KeyStart']['notation']) . " " . h($track['KeyStart']['notation_enharmonic']) : ""; ?></td>
 				</tr>
 		<?php endforeach; ?>
 			</tbody>
