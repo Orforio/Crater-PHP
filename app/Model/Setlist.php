@@ -11,13 +11,13 @@ class Setlist extends AppModel {
 			'rule' => array('maxLength', 255),
 			'required' => true,
 			'allowEmpty' => false,
-			'message' => 'Please keep your setlist name under 255 characters.'
+			'message' => 'Please input a setlist name between 1 and 255 characters.'
 		),
 		'author' => array(
 			'rule' => array('maxLength', 255),
 			'required' => true,
 			'allowEmpty' => false,
-			'message' => 'Please keep your author name under 255 characters.'
+			'message' => 'Please input an author name between 1 and 255 characters.'
 		),
 		'genre' => array(
 			'rule' => array('maxLength', 255),
