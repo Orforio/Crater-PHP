@@ -17,6 +17,12 @@ echo $this->Form->create('Setlist', array(
 		)
 	)
 ));
+
+$keyOptions = array();
+
+foreach ($keys as $key) {
+	$keyOptions[$key['Key']['id']] = $key['Key']['camelot'] . " / " . $key['Key']['openkey'] . " / " . $key['Key']['notation'];
+}
 ?>
 <div class="row">
 	<div class="col-md-9">
@@ -79,7 +85,7 @@ echo $this->Form->create('Setlist', array(
 					<td><?php echo $this->Form->input('Track.' . $i . '.label', array('placeholder' => 'Label')); ?></td>
 					<td><?php echo $this->Form->input('Track.' . $i . '.length', array('type' => 'text', 'placeholder' => '00:00')); ?></td>
 					<td><?php echo $this->Form->input('Track.' . $i . '.bpm_start', array('placeholder' => 'BPM')); ?></td>
-					<td><?php echo $this->Form->input('Track.' . $i . '.key_start', array('placeholder' => 'Key')); ?></td>
+					<td><?php echo $this->Form->select('Track.' . $i . '.key_start', $keyOptions, array('empty' => 'Key')); ?></td>
 					<td><?php echo $this->Form->button('<span class="glyphicon glyphicon-remove-circle"></span>', array('type' => 'button', 'class' => 'btn btn-danger removeRowButton')); ?></td>
 				</tr>
 			<?php endfor; ?>
