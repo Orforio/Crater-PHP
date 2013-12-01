@@ -49,29 +49,34 @@ class SetlistsController extends AppController {
 			foreach ($setlist['Track'] as $i => $track) {
 				$track = $this->Track->calculateBPMDifference($track, $setlist['Setlist']['master_bpm']);
 				$setlist['Track'][$i] = $this->Track->calculateKeyDifference($track);
-				
-				$setlist['Track'][$i]['key_start_modified'] = $this->Key->findById($setlist['Track'][$i]['key_start_modified']);
+
+				if (!empty($setlist['Track'][$i]['key_start_modified'])) {	// Replace the modified Key.id with the entire row from the DB
+					$setlist['Track'][$i]['key_start_modified'] = $this->Key->findById($setlist['Track'][$i]['key_start_modified']);
+				}
 			}
 		}
 	//	debug($setlist);
 		$this->set('setlist', $setlist);
 	}
-    
+
 	public function add() {	// Adds a new setlist
-        if ($this->request->is('post')) {
-            $this->Setlist->create();
-            $this->request->data['Setlist']['private_key'] = $this->generatePrivateKey();
-            if ($this->Setlist->saveAssociated($this->stripBlankPostData($this->request->data))) {
-                $this->Session->setFlash('Your setlist has been saved', 'flash_success_dismissable');
-                return $this->redirect(array('action' => 'edit', $this->Urlhash->encrypt($this->Setlist->getLastInsertID()), $this->request->data['Setlist']['private_key']));
-            } else {
-                $this->Session->setFlash('Something went wrong and your setlist hasn\'t been saved yet. Please check for any erorrs below and try again', 'flash_danger_dismissable');
-                
-                usort($this->request->data['Track'], array($this, "sortOrder"));
-//                debug($this->Setlist->validationErrors);
-            }
-        }
-    }
+		if ($this->request->is('post')) {
+			$this->Setlist->create();
+			$this->request->data['Setlist']['private_key'] = $this->generatePrivateKey();
+			if ($this->Setlist->saveAssociated($this->stripBlankPostData($this->request->data))) {
+				$this->Session->setFlash('Your setlist has been saved', 'flash_success_dismissable');
+				return $this->redirect(array('action' => 'edit', $this->Urlhash->encrypt($this->Setlist->getLastInsertID()), $this->request->data['Setlist']['private_key']));
+			} else {
+				$this->Session->setFlash('Something went wrong and your setlist hasn\'t been saved yet. Please check for any erorrs below and try again', 'flash_danger_dismissable');
+
+				usort($this->request->data['Track'], array($this, "sortOrder"));
+				//debug($this->Setlist->validationErrors);
+			}
+		}
+        
+		$keys = $this->Key->find('all');
+		$this->set('keys', $keys);
+	}
     
 	public function edit($urlHash = null, $privateKey = null) {	// Edits an existing setlist
 	    if (!$urlHash) {
