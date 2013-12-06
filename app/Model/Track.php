@@ -77,13 +77,13 @@ class Track extends AppModel {
 		'key_start' => array(
 			'rule' => array('inList', array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24')),
 			'required' => true,
-			'allowEmpty' => false,
+			'allowEmpty' => true,
 			'message' => 'Please select a valid key from the drop-down.'
 		),
 		'key_end' => array(
 			'rule' => array('inList', array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24')),
 			'required' => false,
-			'allowEmpty' => false,
+			'allowEmpty' => true,
 			'message' => 'Please select a valid key from the drop-down.'
 		)
 	);
