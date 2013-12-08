@@ -85,7 +85,7 @@
 		</div>
 		<?php echo $this->fetch('content'); ?>
 		<footer>
-			<p>&copy; <a href="http://www.sblorgh.org">Richard Whittaker</a> | Version "Andromeda" Patch "twodpbpm"</p>
+			<p>&copy; <a href="http://www.sblorgh.org">Richard Whittaker</a> | Version "Andromeda" Patch "openkey"</p>
 		</footer>
 	</div>
 	<?php //echo $this->element('sql_dump'); 
