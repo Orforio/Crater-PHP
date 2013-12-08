@@ -22,7 +22,7 @@ function startSortable(table) {
 	        // Build a placeholder cell that spans all the cells in the row
 	        var cellCount = 0;
 	        $('td, th', ui.helper).each(function () {
-	            // For each TD or TH try and get it's colspan attribute, and add that or 1 to the total
+	            // For each TD or TH try and get its colspan attribute, and add that or 1 to the total
 	            var colspan = 1;
 	            var colspanAttr = $(this).attr('colspan');
 	            if (colspanAttr > 1) {
@@ -57,18 +57,25 @@ function addTrackRow() {	// Add a new row to the end of the form
 	var numberRows = $('#editForm').find('tbody > tr').length;
 	var newRowNumber = numberRows;
 	var newRowIndex = numberRows - 1;
-	var newRow = '<tr>' +
-			'<input type="hidden" name="data[Track][' + newRowIndex + '][setlist_order]" value="' + newRowNumber + '" id="Track' + newRowIndex + 'SetlistOrder">' +
-			'<td class="draggable" style="white-space: nowrap;"><span class="glyphicon glyphicon-sort"></span> <label class="setlist_order">' + newRowNumber + '</label></td>' +
-			'<td><input name="data[Track][' + newRowIndex + '][artist]" placeholder="Artist" maxlength="255" type="text" class="form-control" id="Track' + newRowIndex + 'Artist"></td>' +
-			'<td><input name="data[Track][' + newRowIndex + '][title]" placeholder="Title" maxlength="255" type="text" class="form-control" id="Track' + newRowIndex + 'Title" required="required"></td>' +
-			'<td><input name="data[Track][' + newRowIndex + '][label]" class="form-control" maxlength="255" placeholder="Label" type="text" id="Track' + newRowIndex + 'Label"></td>' +
-			'<td><input name="data[Track][' + newRowIndex + '][length]" class="form-control" placeholder="00:00" type="text" id="Track' + newRowIndex + 'Length"></td>' +
-			'<td><input name="data[Track][' + newRowIndex + '][bpm_start]" class="form-control" placeholder="BPM" type="number" id="Track' + newRowIndex + 'BpmStart"></td>' +
-			'<td><input name="data[Track][' + newRowIndex + '][key_start]" class="form-control" maxlength="3" placeholder="Key" type="text" id="Track' + newRowIndex + 'KeyStart"></td>' +
-			'<td><button type="button" class="btn btn-danger removeRowButton"><span class="glyphicon glyphicon-remove-circle"></span></button></td>' +
-		'</tr>';
-	$('#editForm').find('tbody > tr').last().before(newRow);
+
+	var lastRow = $('#editForm').find('tbody > tr').last();
+	var newRow = lastRow.prev().clone()
+	
+	newRow.find('[id^="Track"]').each(function() {
+		$(this).attr('name', $(this).attr('name').replace(/\[\d+\]/, "[" + newRowIndex + "]"));
+		$(this).attr('id', $(this).attr('id').replace(/Track\d+/, "Track" + newRowIndex));
+		if($(this).attr('value')) {
+			$(this).removeAttr('value');
+		}
+	});
+	newRow.find('input[name$="[id]"]').remove();
+	newRow.find('input[name$="[setlist_order]"]').attr('value', newRowNumber);
+	newRow.find('label.setlist_order').html(newRowNumber);
+	if(selectedKey = newRow.find('option[selected]')) {
+		selectedKey.removeAttr('selected');
+	}
+	
+	lastRow.before(newRow);
 }
 
 function removeTrack() {	
@@ -79,7 +86,7 @@ function removeTrack() {
 		if (trackID.length == 1) {
 		$.ajax({
 			type: "POST",
-			url: "/setlists/deletetrack/" + trackID.attr('value') + "/" + $(this).closest('table').data('editkey'),
+			url: "/setlists/deletetrack/" + trackID.attr('value') + "/" + $(this).closest('table').data('editkey'),	// TODO: This probably belongs in TrackController
 			success: removeTrackProcessResult(this) })
 			.fail(function() {
 				alert("Sorry, something went wrong and the track wasn't deleted");	});
