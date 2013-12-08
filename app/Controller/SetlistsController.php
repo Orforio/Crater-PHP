@@ -67,7 +67,7 @@ class SetlistsController extends AppController {
 				$this->Session->setFlash('Your setlist has been saved', 'flash_success_dismissable');
 				return $this->redirect(array('action' => 'edit', $this->Urlhash->encrypt($this->Setlist->getLastInsertID()), $this->request->data['Setlist']['private_key']));
 			} else {
-				$this->Session->setFlash('Something went wrong and your setlist hasn\'t been saved yet. Please check for any erorrs below and try again', 'flash_danger_dismissable');
+				$this->Session->setFlash('Something went wrong and your setlist hasn\'t been saved yet. Please check for any errors below and try again', 'flash_danger_dismissable');
 
 				usort($this->request->data['Track'], array($this, "sortOrder"));
 				//debug($this->Setlist->validationErrors);
@@ -129,10 +129,15 @@ class SetlistsController extends AppController {
 		$setlist['Setlist']['urlhash'] = $urlHash;
 		
 		$this->set('setlist', $setlist);
+		
+		$keys = $this->Key->find('all');
+		$this->set('keys', $keys);
 
 	    if (!$this->request->data) {
 	        $this->request->data = $setlist;
 	    }
+	    
+	    //debug($this->Setlist->validationErrors);
 	}
 	
 	public function delete($urlHash = null, $privateKey = null) {	// Deletes a setlist
