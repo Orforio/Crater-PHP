@@ -139,37 +139,37 @@ class SetlistsController extends AppController {
 	    
 	    //debug($this->Setlist->validationErrors);
 	}
-	
+
 	public function delete($urlHash = null, $privateKey = null) {	// Deletes a setlist
-	    if ($this->request->is('get')) {
-	        throw new MethodNotAllowedException();
+		if ($this->request->is('get')) {
+			throw new MethodNotAllowedException();
+		}
+		if (!$urlHash) {
+			throw new NotFoundException(__('Invalid setlist'));
+		}
+		elseif (!$privateKey) {
+			$this->Session->setFlash('You need this setlist\'s Edit Key to delete it', 'flash_danger_dismissable');
+			return $this->redirect(array('action' => 'view', $urlHash));
+		}
+
+		$decryptedID = $this->Urlhash->decrypt($urlHash);
+
+		$setlist = $this->Setlist->find('first', array(
+			'conditions' => array('Setlist.id' => $decryptedID)));
+
+		if ($setlist['Setlist']['private_key'] != $privateKey) {
+			$this->Session->setFlash('You need this setlist\'s Edit Key to delete it', 'flash_danger_dismissable');
+			return $this->redirect(array('action' => 'view', $urlHash));
+		}
+
+		if ($this->Setlist->delete($decryptedID, true)) {
+			$this->Session->setFlash('Setlist "' . h($setlist['Setlist']['name']) . '" has been deleted', 'flash_success_dismissable');
+			return $this->redirect(array('action' => 'index'));
 	    }
-	    if (!$urlHash) {
-	        throw new NotFoundException(__('Invalid setlist'));
-	    }
-	    elseif (!$privateKey) {
-		    $this->Session->setFlash('You need this setlist\'s Edit Key to delete it', 'flash_danger_dismissable');
-		    return $this->redirect(array('action' => 'view', $urlHash));
-	    }
-	    
-	    $decryptedID = $this->Urlhash->decrypt($urlHash);
-	    
-	    $setlist = $this->Setlist->find('first', array(
-	    	'conditions' => array('Setlist.id' => $decryptedID)));
-	    	
-	    if ($setlist['Setlist']['private_key'] != $privateKey) {
-		    $this->Session->setFlash('You need this setlist\'s Edit Key to delete it', 'flash_danger_dismissable');
-		    return $this->redirect(array('action' => 'view', $urlHash));
-	    }
-	
-	    if ($this->Setlist->delete($decryptedID, true)) {
-	        $this->Session->setFlash('Setlist "' . h($setlist['Setlist']['name']) . '" has been deleted', 'flash_success_dismissable');
-	        return $this->redirect(array('action' => 'index'));
-	    }
-	    else {
-		    $this->Session->setFlash('Something went wrong and the setlist couldn\'t be deleted', 'flash_danger_dismissable');
-		    return $this->redirect(array('action' => 'view', $urlHash));
-	    }
+		else {
+			$this->Session->setFlash('Something went wrong and the setlist couldn\'t be deleted', 'flash_danger_dismissable');
+			return $this->redirect(array('action' => 'view', $urlHash));
+		}
 	}
 
 	public function deletetrack($trackID = null, $privateKey = null) {
@@ -227,9 +227,15 @@ class SetlistsController extends AppController {
 	}
 	
 	public function beforeFilter() {
-		//$this->response->disableCache();
 		$this->Security->unlockedActions = array('deletetrack');
-    	$this->Security->unlockedFields = array('Track.id', 'Track.setlist_order', 'Track.artist', 'Track.title', 'Track.label', 'Track.length', 'Track.bpm_start', 'Track.key_start');
+		$this->Security->unlockedFields = array('Track.id', 'Track.setlist_order', 'Track.artist', 'Track.title', 'Track.label', 'Track.length', 'Track.bpm_start', 'Track.key_start');
+		$this->Security->blackHoleCallback = 'blackhole';
+		$this->Security->csrfUseOnce = false;
+	}
+	
+	public function blackhole($type) {
+		$this->Session->setFlash('Your request was ignored by the server for this reason: ' . h($type), 'flash_danger_dismissable');
+		return $this->redirect(array('action' => 'index'));
 	}
 }
 ?>
