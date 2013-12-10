@@ -64,6 +64,7 @@ function addTrackRow() {	// Add a new row to the end of the form
 	newRow.find('[id^="Track"]').each(function() {
 		$(this).attr('name', $(this).attr('name').replace(/\[\d+\]/, "[" + newRowIndex + "]"));
 		$(this).attr('id', $(this).attr('id').replace(/Track\d+/, "Track" + newRowIndex));
+		$(this).val('');
 		if($(this).attr('value')) {
 			$(this).removeAttr('value');
 		}
