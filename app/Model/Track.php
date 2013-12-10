@@ -14,12 +14,6 @@ class Track extends AppModel {
 	public $helpers = array('Time');
 	public $recursive = -1;
 	public $validate = array(
-/*		'setlist_id' => array(	// Not present in HTTP Request
-			'rule' => 'naturalNumber',
-			'required' => true,
-			'allowEmpty' => false,
-			'message' => 'Missing setlist ID'
-		),*/
 		'setlist_order' => array(
 			'rule' => 'naturalNumber',
 			'required' => true,
@@ -274,7 +268,11 @@ class Track extends AppModel {
 			$this->data['Track']['key_start'] = strtoupper($this->data['Track']['key_start']);
 		}
 		
-		return true;
+		if ($this->validateTrackID($this->data)) {
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public function afterFind($results, $primary = false) {	// Turns database 00:00:00 into 00:00 for user input
@@ -341,6 +339,21 @@ class Track extends AppModel {
 		}
 	}
 	
+	public function validateTrackID($check = null) {
+		if (isset($check['Track']['id']) && isset($check['Track']['setlist_id'])) {
+			$track = $this->find('first', array(
+				'conditions' => array('Track.id' => $check['Track']['id'])));
+			
+			if (!empty($track) && ($track['Track']['setlist_id'] == $check['Track']['setlist_id'])) {
+				return true;	// TrackID belongs to stated SetlistID
+			}
+		} elseif (empty($check['Track']['id'])) {
+			return true;	// New track
+		}
+		
+		return false;	// TrackID was forged
+	}
+	
 	protected function afConvertTrackLength($results) {
 		foreach ($results as $i => $result) {
 			if (isset($result['Track']['length'])) {
@@ -351,4 +364,3 @@ class Track extends AppModel {
 		return $results;
 	}
 }
-?>

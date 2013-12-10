@@ -69,9 +69,9 @@ class TrackTest extends CakeTestCase {
 	//	debug($trackGroupE);
 		
 		$testTrackArray0 = $this->Track->calculateBPMDifference($trackGroupE['Track'][0], $trackGroupE['Setlist']['master_bpm']);
-		debug($testTrackArray0);
+	//	debug($testTrackArray0);
 		$testTrackArray0 = $this->Track->calculateKeyDifference($testTrackArray0);
-		debug($testTrackArray0);
+	//	debug($testTrackArray0);
 		
 		$testTrackArray1 = $this->Track->calculateBPMDifference($trackGroupE['Track'][1], $trackGroupE['Setlist']['master_bpm']);
 		$testTrackArray1 = $this->Track->calculateKeyDifference($testTrackArray1);
@@ -100,6 +100,26 @@ class TrackTest extends CakeTestCase {
 		$this->assertEquals(0, $testTrackArray5['key_start_modified']);	// No BPM given, empty result
 		$this->assertEquals(0, $this->Track->calculateKeyDifference());	// Invalid input, empty result
 		$this->assertEquals(2, $testTrackArray6['key_start_modified']);	// Test wrap-around issue
+	}
+	
+	public function testValidateTrackID() {
+		$trackGroupB = $this->Setlist->find('first', array(
+			'conditions' => array('Setlist.id' => 1),
+			'recursive' => 1));
+		
+		$testTrackArray7['Track'] = $trackGroupB['Track'][0];
+		$testTrackArray8['Track'] = $trackGroupB['Track'][1];
+		$testTrackArray9['Track'] = $trackGroupB['Track'][2];
+		$testTrackArray10['Track'] = $trackGroupB['Track'][3];
+		
+		$testTrackArray8['Track']['id'] = '8';	// Track 8 does not belong to Setlist 1
+		$testTrackArray9['Track']['id'] = '573';	// Track 573 does not exist yet
+		unset($testTrackArray10['Track']['id']);	// Pretending this is a new track
+			
+		$this->assertTrue($this->Track->validateTrackID($testTrackArray7));		// Existing track
+		$this->assertFalse($this->Track->validateTrackID($testTrackArray8));	// Forged TrackID
+		$this->assertFalse($this->Track->validateTrackID($testTrackArray9));	// Nonexistant TrackID
+		$this->assertTrue($this->Track->validateTrackID($testTrackArray10));	// New track
 	}
 }
 ?>
