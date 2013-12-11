@@ -62,16 +62,29 @@ class SetlistsController extends AppController {
 	public function add() {	// Adds a new setlist
 		if ($this->request->is('post')) {
 			$this->Setlist->create();
-			$this->request->data['Setlist']['private_key'] = $this->generatePrivateKey();
-			if ($this->Setlist->saveAssociated($this->stripBlankPostData($this->request->data))) {
-				$this->Session->setFlash('Your setlist has been saved', 'flash_success_dismissable');
-				return $this->redirect(array('action' => 'edit', $this->Urlhash->encrypt($this->Setlist->getLastInsertID()), $this->request->data['Setlist']['private_key']));
-			} else {
-				$this->Session->setFlash('Something went wrong and your setlist hasn\'t been saved yet. Please check for any errors below and try again', 'flash_danger_dismissable');
+			
+			if ($strippedRequestData = $this->_stripBlankPostData($this->request->data)) {
+				$strippedRequestData['Setlist']['private_key'] = $this->generatePrivateKey();
+				
+				if ($this->Setlist->saveAssociated($strippedRequestData)) {
+					$this->Session->setFlash('Your setlist has been saved', 'flash_success_dismissable');
+					return $this->redirect(array(
+						'action' => 'edit',
+						$this->Urlhash->encrypt($this->Setlist->getLastInsertID()),
+						$this->request->data['Setlist']['private_key']
+					));
+				} else {
+					$this->Session->setFlash("Something went wrong and your setlist hasn't been saved yet - please check for any errors below and try again", 'flash_danger_dismissable');
+	
+					usort($this->request->data['Track'], array($this, "sortOrder"));
+					//debug($this->Setlist->validationErrors);
+				}
 
+			} else {
+				$this->Session->setFlash("Please enter at least two tracks before saving", 'flash_danger_dismissable');
 				usort($this->request->data['Track'], array($this, "sortOrder"));
-				//debug($this->Setlist->validationErrors);
 			}
+			
 		}
         
 		$keys = $this->Key->find('all');
@@ -84,7 +97,7 @@ class SetlistsController extends AppController {
 	    }
 	    elseif (!$privateKey) {
 	    	if (!isset($this->request->query['editkey'])) {
-		    	$this->Session->setFlash('You need this setlist\'s Edit Key to update it', 'flash_danger_dismissable');
+		    	$this->Session->setFlash("You need this setlist's Edit Key to update it", 'flash_danger_dismissable');
 				$this->redirect(array('action' => 'view', $urlHash));
 	    	}
 	    	else {
@@ -103,26 +116,37 @@ class SetlistsController extends AppController {
 	    }
 	    
 	    if ($setlist['Setlist']['private_key'] != $privateKey) {
-		    $this->Session->setFlash('You need this setlist\'s Edit Key to update it', 'flash_danger_dismissable');
+		    $this->Session->setFlash("You need this setlist's Edit Key to update it", 'flash_danger_dismissable');
 		    return $this->redirect(array('action' => 'view', $urlHash));
 	    }
 	    
 		if ($this->request->is('post') || $this->request->is('put')) {
-			$this->Setlist->id = $decryptedID;
-			if ($this->Setlist->saveAssociated($this->stripBlankPostData($this->request->data))) {
-				$this->Session->setFlash('Your setlist has been updated', 'flash_success_dismissable');
-				
-				return $this->redirect(array('action' => 'edit', $urlHash, $privateKey));
-	        } else {
-	            $this->Session->setFlash('Something went wrong and your setlist hasn\'t been updated', 'flash_danger_dismissable');
-	            
-	            //debug($setlist);
-				
+			if ($strippedRequestData = $this->_stripBlankPostData($this->request->data)) {
+				$this->Setlist->id = $decryptedID;
+				if ($this->Setlist->saveAssociated($strippedRequestData)) {
+					$this->Session->setFlash('Your setlist has been updated', 'flash_success_dismissable');
+					
+					return $this->redirect(array(
+						'action' => 'edit',
+						$urlHash,
+						$privateKey
+					));
+		        } else {
+		            $this->Session->setFlash("Something went wrong and your setlist hasn't been updated", 'flash_danger_dismissable');
+		            //debug($setlist);
+
+					$setlist = array_replace_recursive($setlist, $this->request->data);
+					usort($this->request->data['Track'], array($this, "sortOrder"));
+					usort($setlist['Track'], array($this, "sortOrder"));
+				//	debug($this->request->data);
+				}
+			} else {
+				$this->Session->setFlash("Please enter at least two tracks before saving", 'flash_danger_dismissable');
+
 				$setlist = array_replace_recursive($setlist, $this->request->data);
 				usort($this->request->data['Track'], array($this, "sortOrder"));
 				usort($setlist['Track'], array($this, "sortOrder"));
-			//	debug($this->request->data);
-	        }
+			}
 	    }
 		
 		$setlist['Setlist']['suggested_bpm'] = $this->Setlist->calculateAverageBPM($setlist['Track']);
@@ -203,15 +227,23 @@ class SetlistsController extends AppController {
 		}
 	}
 	
-	protected function stripBlankPostData($data) {	// Ensures only form data with rows that have a title filled in are passed on to be saved
+	protected function _stripBlankPostData($data) {	// Ensures only form data with rows that have a title filled in are passed on to be saved
 		$strippedData['Setlist'] = $data['Setlist'];
+		$numberTracks = 0;
 		
 		foreach ($data['Track'] as $i => $track) {
-			if (strlen($track['title']) > 0) {
+			if ((strlen($track['title']) > 0) || (strlen($track['artist']) > 0)) {
 				$strippedData['Track'][] = $data['Track'][$i];
+				$numberTracks++;
 			}
 		}
-		return $strippedData;
+		
+		if ($numberTracks >= 2) {
+			return $strippedData;
+		}
+		else {
+			return false;
+		}
 	}
 	
 	protected function generatePrivateKey() {
@@ -238,4 +270,3 @@ class SetlistsController extends AppController {
 		return $this->redirect(array('action' => 'index'));
 	}
 }
-?>
