@@ -43,33 +43,32 @@ class Setlist extends AppModel {
 	public $actsAs = array('Containable');
 
 	public function calculateAverageBPM($data = null) {
-    	if (!isset($data)) {
-	    	return 0;
-    	}
-    	
-    	$bpmTotal = 0;
-    	$numberTracks = 0;
-    	
-    	foreach ($data as $track) {
-	    	if (floatval($track['bpm_start'])) {
-		    	$numberTracks++;
-		    	$bpmTotal += $track['bpm_start'];
-	    	}
-    	}
-    	
-    	if ($numberTracks == 0) {
-	    	return 0;
-    	}
-    	
-    	return round($bpmTotal / $numberTracks);  
-    }
-    
-    public function beforeSave($options = array()) {
-		// debug($this->data);
-	    // return false;
-	    
-	    return true;
-    }
+		if (!isset($data)) {
+			return 0;
+		}
+		
+		$bpmTotal = 0;
+		$numberTracks = 0;
+		
+		foreach ($data as $track) {
+			if (floatval($track['bpm_start'])) {
+				$numberTracks++;
+				$bpmTotal += $track['bpm_start'];
+			}
+		}
+		
+		if ($numberTracks == 0) {
+			return 0;
+		}
+		
+		return round($bpmTotal / $numberTracks);  
+	}
+	
+	public function beforeSave($options = array()) {
+		//debug($this->data);
+	    //return false;
+
+		return true;
+	}
 
 }
-?>

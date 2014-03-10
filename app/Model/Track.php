@@ -82,7 +82,7 @@ class Track extends AppModel {
 		)
 	);
 
-		public function getKeyNotation($key = null) {	// Returns a key notation to display according to user preference
+	public function getKeyNotation($key = null) {	// Returns a key notation to display according to user preference
 		switch (strtoupper($key)) {
 			case "1A":
 				return "A♭";
