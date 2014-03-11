@@ -197,7 +197,7 @@ class SetlistsController extends AppController {
 	}
 
 	public function deletetrack($trackID = null, $privateKey = null) {
-		$this->autoRender = false;
+		$this->autoRender = false;	// This is currently an AJAX-only function
 	
 		if ($this->request->is('get')) {
 			throw new MethodNotAllowedException();
@@ -213,7 +213,11 @@ class SetlistsController extends AppController {
 		
 		$track = $this->Track->find('first', array(
 			'conditions' => array('Track.id' => $trackID),
-			'recursive' => 1));
+			'recursive' => 2));
+			
+		if(count($track['Setlist']['Track']) <= 2) {
+			throw new ForbiddenException(__('Setlist contains 2 tracks or fewer'));
+		}
 			
 		if ($track['Setlist']['private_key'] != $privateKey) {
 			throw new NotFoundException(__('Invalid setlist Edit Key'));

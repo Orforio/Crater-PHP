@@ -81,7 +81,14 @@ function addTrackRow() {	// Add a new row to the end of the form
 
 function removeTrack() {	
 	var trackID = $(this).closest('tr').find('input[id$="Id"]');
-	var confirm = window.confirm("Are you sure you want to delete this track? There is no undo.");
+	var numberTracks = $(this).closest('tbody').find('tr').length - 1;	//Removes the bottom button row. TODO: Turn this into a tfooter
+	
+	if (numberTracks <= 2) {
+		alert("Sorry, you cannot have fewer than 2 tracks in a setlist.");
+	}
+	else {
+		var confirm = window.confirm("Are you sure you want to delete this track? There is no undo.");
+	}
 	
 	if (confirm == true) {
 		if (trackID.length == 1) {
@@ -89,8 +96,8 @@ function removeTrack() {
 			type: "POST",
 			url: "/setlists/deletetrack/" + trackID.attr('value') + "/" + $(this).closest('table').data('editkey'),	// TODO: This probably belongs in TrackController
 			success: removeTrackProcessResult(this) })
-			.fail(function() {
-				alert("Sorry, something went wrong and the track wasn't deleted");	});
+			.fail(function(jqXHR, textStatus, errorThrown) {
+				alert("Sorry, something went wrong and the track wasn't deleted: " + errorThrown);	});
 		}
 		else {
 			removeTrackRow(this);
