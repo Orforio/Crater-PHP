@@ -97,7 +97,11 @@ function removeTrack() {
 			url: "/setlists/deletetrack/" + trackID.attr('value') + "/" + $(this).closest('table').data('editkey'),	// TODO: This probably belongs in TrackController
 			success: removeTrackProcessResult(this) })
 			.fail(function(jqXHR, textStatus, errorThrown) {
-				alert("Sorry, something went wrong and the track wasn't deleted: " + errorThrown);	});
+				if (errorThrown == "Forbidden") {
+					alert("Sorry, you cannot have fewer than 2 tracks in a setlist.")
+				} else {
+				alert("Sorry, something went wrong and the track wasn't deleted: " + errorThrown);	
+				}});
 		}
 		else {
 			removeTrackRow(this);
