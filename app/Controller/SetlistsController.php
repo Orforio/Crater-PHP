@@ -121,9 +121,9 @@ class SetlistsController extends AppController {
 	    }
 	    
 		if ($this->request->is('post') || $this->request->is('put')) {
-			if ($this->request->data = $this->_stripBlankPostData($this->request->data)) {
+			if ($strippedRequestData = $this->_stripBlankPostData($this->request->data)) {
 				$this->Setlist->id = $decryptedID;
-				if ($this->Setlist->saveAssociated($this->request->data)) {
+				if ($this->Setlist->saveAssociated($strippedRequestData)) {
 					$this->Session->setFlash('Your setlist has been updated', 'flash_success_dismissable');
 					
 					return $this->redirect(array(
