@@ -44,7 +44,10 @@ class TrackFixture extends CakeTestFixture {
 		array('id' => 27, 'setlist_id' => '5', 'setlist_order' => '7', 'title' => 'Track ZZ', 'artist' => 'Artist ZZ', 'label' => 'Label ZZ', 'length' => '00:01:23', 'bpm_start' => '148.00', 'bpm_end' => '', 'key_start' => '22', 'key_end' => ''),
 		array('id' => 28, 'setlist_id' => '6', 'setlist_order' => '1', 'title' => 'Weird BPM', 'artist' => 'Artist 1', 'label' => 'Label 1', 'length' => '00:01:23', 'bpm_start' => '140.25', 'bpm_end' => '', 'key_start' => '9', 'key_end' => ''),
 		array('id' => 29, 'setlist_id' => '6', 'setlist_order' => '2', 'title' => 'Weird BPM 2', 'artist' => 'Artist 2', 'label' => 'Label 2', 'length' => '00:01:23', 'bpm_start' => '143.97', 'bpm_end' => '', 'key_start' => '11', 'key_end' => ''),
-		array('id' => 30, 'setlist_id' => '6', 'setlist_order' => '3', 'title' => 'Weird BPM 3', 'artist' => 'Artist 3', 'label' => 'Label 3', 'length' => '00:01:23', 'bpm_start' => '139.55', 'bpm_end' => '', 'key_start' => '14', 'key_end' => '')
+		array('id' => 30, 'setlist_id' => '6', 'setlist_order' => '3', 'title' => 'Weird BPM 3', 'artist' => 'Artist 3', 'label' => 'Label 3', 'length' => '00:01:23', 'bpm_start' => '139.55', 'bpm_end' => '', 'key_start' => '14', 'key_end' => ''),
+		array('id' => 31, 'setlist_id' => '7', 'setlist_order' => '2', 'title' => 'Wrong Order 1', 'artist' => 'Artist 1', 'label' => 'Label 1', 'length' => '00:01:23', 'bpm_start' => '140.25', 'bpm_end' => '', 'key_start' => '9', 'key_end' => ''),
+		array('id' => 32, 'setlist_id' => '7', 'setlist_order' => '2', 'title' => 'Wrong Order 2', 'artist' => 'Artist 2', 'label' => 'Label 2', 'length' => '00:01:23', 'bpm_start' => '143.97', 'bpm_end' => '', 'key_start' => '11', 'key_end' => ''),
+		array('id' => 33, 'setlist_id' => '7', 'setlist_order' => '4', 'title' => 'Wrong Order 3', 'artist' => 'Artist 3', 'label' => 'Label 3', 'length' => '00:01:23', 'bpm_start' => '139.55', 'bpm_end' => '', 'key_start' => '14', 'key_end' => '')
 	);
 }
 ?>

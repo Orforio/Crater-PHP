@@ -121,5 +121,24 @@ class TrackTest extends CakeTestCase {
 		$this->assertFalse($this->Track->validateTrackID($testTrackArray9));	// Nonexistant TrackID
 		$this->assertTrue($this->Track->validateTrackID($testTrackArray10));	// New track
 	}
+	
+	public function testBsSetSetlistOrder() {
+		$trackGroupG = $this->Setlist->find('first', array(
+			'conditions' => array('Setlist.id' => 7),
+			'recursive' => 1));
+			
+		$trackGroupG;
+			
+		foreach ($trackGroupG['Track'] as $key => $track) {
+			$dataGroupG[$key]['Track'] = $track;
+			$resultGroupG[$key] = $this->Track->bsSetSetlistOrder($dataGroupG[$key]);
+			debug($dataGroupG[$key]);
+			debug($resultGroupG[$key]);
+		}
+			
+		$this->assertEquals(1, $resultGroupG[0]['Track']['setlist_order']);
+		$this->assertEquals(2, $resultGroupG[1]['Track']['setlist_order']);
+		$this->assertEquals(3, $resultGroupG[2]['Track']['setlist_order']);
+	}
 }
 ?>

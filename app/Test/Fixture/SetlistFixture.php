@@ -16,7 +16,8 @@ class SetlistFixture extends CakeTestFixture {
 		array('id' => 3, 'name' => 'Bemix', 'author' => 'DJ Konami', 'genre' => 'Beatmania', 'modified' => '2013-07-27 01:27:04', 'private_key' => '', 'master_bpm' => ''),
 		array('id' => 4, 'name' => 'House Party', 'author' => 'Noel', 'genre' => 'House', 'modified' => '2013-07-27 01:27:04', 'private_key' => '', 'master_bpm' => ''),
 		array('id' => 5, 'name' => 'Hardcore Heaven', 'author' => '.59', 'genre' => 'Hardcore', 'modified' => '2013-07-27 01:27:04', 'private_key' => '', 'master_bpm' => '162.00'),
-		array('id' => 6, 'name' => 'Weird BPM', 'author' => 'だれか', 'genre' => 'Wobblycore', 'modified' => '2013-07-27 01:27:04', 'private_key' => '', 'master_bpm' => '141.26')
+		array('id' => 6, 'name' => 'Weird BPM', 'author' => 'だれか', 'genre' => 'Wobblycore', 'modified' => '2013-07-27 01:27:04', 'private_key' => '', 'master_bpm' => '141.26'),
+		array('id' => 7, 'name' => 'Wrong Order', 'author' => 'Blue Mondays', 'genre' => 'Easy Listing', 'modified' => '2013-07-27 01:27:04', 'private_key' => '', 'master_bpm' => '100.00')
 	);
 }
 ?>
