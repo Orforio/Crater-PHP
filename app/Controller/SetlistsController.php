@@ -121,9 +121,9 @@ class SetlistsController extends AppController {
 	    }
 	    
 		if ($this->request->is('post') || $this->request->is('put')) {
-			if ($strippedRequestData = $this->_stripBlankPostData($this->request->data)) {
+			if ($this->request->data = $this->_stripBlankPostData($this->request->data)) {
 				$this->Setlist->id = $decryptedID;
-				if ($this->Setlist->saveAssociated($strippedRequestData)) {
+				if ($this->Setlist->saveAssociated($this->request->data)) {
 					$this->Session->setFlash('Your setlist has been updated', 'flash_success_dismissable');
 					
 					return $this->redirect(array(
@@ -133,12 +133,10 @@ class SetlistsController extends AppController {
 					));
 		        } else {
 		            $this->Session->setFlash("Something went wrong and your setlist hasn't been updated", 'flash_danger_dismissable');
-		            //debug($setlist);
-
+		           
 					$setlist = array_replace_recursive($setlist, $this->request->data);
 					usort($this->request->data['Track'], array($this, "sortOrder"));
 					usort($setlist['Track'], array($this, "sortOrder"));
-				//	debug($this->request->data);
 				}
 			} else {
 				$this->Session->setFlash("Please enter at least two tracks before saving", 'flash_danger_dismissable');
@@ -161,7 +159,7 @@ class SetlistsController extends AppController {
 	        $this->request->data = $setlist;
 	    }
 	    
-	    //debug($this->Setlist->validationErrors);
+//	    debug($this->Setlist->validationErrors);
 	}
 
 	public function delete($urlHash = null, $privateKey = null) {	// Deletes a setlist

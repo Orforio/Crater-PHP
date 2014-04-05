@@ -81,6 +81,8 @@ class Track extends AppModel {
 			'message' => 'Please select a valid key from the drop-down.'
 		)
 	);
+	
+	protected $_currentTrack = 1;	// Used to keep tabs on current track during beforeSave() operations
 
 	public function getKeyNotation($key = null) {	// Returns a key notation to display according to user preference
 		switch (strtoupper($key)) {
@@ -268,11 +270,19 @@ class Track extends AppModel {
 			$this->data['Track']['key_start'] = strtoupper($this->data['Track']['key_start']);
 		}
 		
+		$this->data = $this->bsSetSetlistOrder($this->data);
+		
 		if ($this->validateTrackID($this->data)) {
 			return true;
 		}
 		
 		return false;
+	}
+	
+	public function bsSetSetlistOrder($data) {	// Sets each track's setlist_order according to their submission order
+		$data['Track']['setlist_order'] = $this->_currentTrack;
+		$this->_currentTrack++;
+		return $data;
 	}
 	
 	public function afterFind($results, $primary = false) {	// Turns database 00:00:00 into 00:00 for user input
