@@ -71,7 +71,7 @@ class SetlistsController extends AppController {
 					return $this->redirect(array(
 						'action' => 'edit',
 						$this->Urlhash->encrypt($this->Setlist->getLastInsertID()),
-						$this->request->data['Setlist']['private_key']
+						$strippedRequestData['Setlist']['private_key']
 					));
 				} else {
 					$this->Session->setFlash("Something went wrong and your setlist hasn't been saved yet - please check for any errors below and try again", 'flash_danger_dismissable');
