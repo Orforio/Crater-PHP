@@ -18,10 +18,23 @@ echo $this->Form->create('Setlist', array(
 	)
 ));
 
+$keyPreferenceOptions = array('c' => 'Camelot', 'o' => 'Open Key', 'n' => 'Notation');
 $keyOptions = array();
+switch ($setlist['Setlist']['key_preference']) {
+	case 'o':
+		$keyPreference = 'openkey';
+		break;
+	case 'n':
+		$keyPreference = 'notation';
+		break;
+	case 'c':
+	default:
+		$keyPreference = 'camelot';
+		break;
+};
 
 foreach ($keys as $key) {
-	$keyOptions[$key['Key']['id']] = $key['Key']['camelot'] . " / " . $key['Key']['openkey'] . " / " . $key['Key']['notation'];
+	$keyOptions[$key['Key']['id']] = $key['Key'][$keyPreference];
 }
 
 echo $this->Form->input('Setlist.id', array('type' => 'hidden'));
@@ -67,7 +80,7 @@ echo $this->Form->input('Setlist.id', array('type' => 'hidden'));
 					<th>Label</th>
 					<th>Length</th>
 					<th>BPM</th>
-					<th>Key</th>
+					<th>Key <?php echo $this->Form->select('Setlist.key_preference', $keyPreferenceOptions, array('empty' => false)); ?></th>
 					<th>&nbsp;</th>
 				</tr>
 			</thead>

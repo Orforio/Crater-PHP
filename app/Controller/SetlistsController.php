@@ -1,7 +1,7 @@
 <?php
 class SetlistsController extends AppController {
 	public $helpers = array('Html', 'Form', 'Session', 'Time', 'Track', 'Js' => array('Jquery'));
-	public $components = array('Session', 'Security', 'Urlhash');
+	public $components = array('Session', 'Security', 'Urlhash', 'Cookie');
 	public $uses = array('Setlist', 'Track', 'Key');
 
 	public function index() {
@@ -123,6 +123,11 @@ class SetlistsController extends AppController {
 		if ($this->request->is('post') || $this->request->is('put')) {
 			if ($strippedRequestData = $this->_stripBlankPostData($this->request->data)) {
 				$this->Setlist->id = $decryptedID;
+				
+				if(isset($this->request->data['Setlist']['key_preference'])) {
+					$this->_setKeyPreference($this->request->data['Setlist']['key_preference']);
+				}
+				
 				if ($this->Setlist->saveAssociated($strippedRequestData)) {
 					$this->Session->setFlash('Your setlist has been updated', 'flash_success_dismissable');
 					
@@ -149,6 +154,7 @@ class SetlistsController extends AppController {
 		
 		$setlist['Setlist']['suggested_bpm'] = $this->Setlist->calculateAverageBPM($setlist['Track']);
 		$setlist['Setlist']['urlhash'] = $urlHash;
+		$setlist['Setlist']['key_preference'] = $this->_getKeyPreference();
 		
 		$this->set('setlist', $setlist);
 		
@@ -158,7 +164,6 @@ class SetlistsController extends AppController {
 	    if (!$this->request->data) {
 	        $this->request->data = $setlist;
 	    }
-	    
 //	    debug($this->Setlist->validationErrors);
 	}
 
@@ -256,15 +261,44 @@ class SetlistsController extends AppController {
 		return $this->Urlhash->encrypt($secretSeed);
 	}
 	
+	protected function _setKeyPreference($key) {
+		switch($key) {
+			case 'c':
+			case 'o':
+			case 'n':
+				$this->Cookie->write('key_preference', $key);
+				break;
+		}
+	}
+	
+	protected function _getKeyPreference() {
+		if ($this->Cookie->check('key_preference')) {
+			return $this->Cookie->read('key_preference');
+		} else {
+			return 'c';
+		}
+	}
+	
 	private function sortOrder($a, $b) {	// Used by usort to order tracks by their setlist order
 		return $a['setlist_order'] > $b['setlist_order'];
 	}
 	
 	public function beforeFilter() {
+		parent::beforeFilter();
+		
 		$this->Security->unlockedActions = array('deletetrack');
 		$this->Security->unlockedFields = array('Track.id', 'Track.setlist_order', 'Track.artist', 'Track.title', 'Track.label', 'Track.length', 'Track.bpm_start', 'Track.key_start');
 		$this->Security->blackHoleCallback = 'blackhole';
 		$this->Security->csrfUseOnce = false;
+    
+		$this->Cookie->name = 'crater_user_preferences';
+		$this->Cookie->time = 3156000;  // 1 year
+		$this->Cookie->path = '/';
+		$this->Cookie->domain = 'crater.dev';
+		$this->Cookie->secure = false;
+		$this->Cookie->key = Configure::read('Security.salt');
+		$this->Cookie->httpOnly = false;
+		$this->Cookie->type('rijndael');
 	}
 	
 	public function blackhole($type) {
