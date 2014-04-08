@@ -56,12 +56,17 @@ class SetlistsController extends AppController {
 			}
 		}
 	//	debug($setlist);
+		$setlist['Setlist']['key_preference'] = $this->_getKeyPreference();
 		$this->set('setlist', $setlist);
 	}
 
 	public function add() {	// Adds a new setlist
 		if ($this->request->is('post')) {
 			$this->Setlist->create();
+			
+			if (isset($this->request->data['Setlist']['key_preference'])) {
+				$this->_setKeyPreference($this->request->data['Setlist']['key_preference']);
+			}
 			
 			if ($strippedRequestData = $this->_stripBlankPostData($this->request->data)) {
 				$strippedRequestData['Setlist']['private_key'] = $this->generatePrivateKey();
@@ -86,6 +91,9 @@ class SetlistsController extends AppController {
 			}
 			
 		}
+		
+		$setlist['Setlist']['key_preference'] = $this->_getKeyPreference();
+		$this->set('setlist', $setlist);
         
 		$keys = $this->Key->find('all');
 		$this->set('keys', $keys);
@@ -124,7 +132,7 @@ class SetlistsController extends AppController {
 			if ($strippedRequestData = $this->_stripBlankPostData($this->request->data)) {
 				$this->Setlist->id = $decryptedID;
 				
-				if(isset($this->request->data['Setlist']['key_preference'])) {
+				if (isset($this->request->data['Setlist']['key_preference'])) {
 					$this->_setKeyPreference($this->request->data['Setlist']['key_preference']);
 				}
 				
@@ -294,7 +302,8 @@ class SetlistsController extends AppController {
 		$this->Cookie->name = 'crater_user_preferences';
 		$this->Cookie->time = 3156000;  // 1 year
 		$this->Cookie->path = '/';
-		$this->Cookie->domain = 'crater.dev';
+		$this->Cookie->domain = 'crater.sblorgh.org';
+//		$this->Cookie->domain = 'crater.dev';	// Testing purposes only
 		$this->Cookie->secure = false;
 		$this->Cookie->key = Configure::read('Security.salt');
 		$this->Cookie->httpOnly = false;

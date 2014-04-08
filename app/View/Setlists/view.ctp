@@ -1,3 +1,21 @@
+<?php
+$keyOptions = array();
+switch ($setlist['Setlist']['key_preference']) {
+	case 'o':
+		$keyPreference = 'openkey';
+		$keyDisplay = 'Open Key';
+		break;
+	case 'n':
+		$keyPreference = 'notation';
+		$keyDisplay = 'Notation';
+		break;
+	case 'c':
+	default:
+		$keyPreference = 'camelot';
+		$keyDisplay = 'Camelot';
+		break;
+};
+?>
 <div class="row">
 	<div class="col-md-12">
 		<h2><?php echo h($setlist['Setlist']['name']); ?></h2>
@@ -54,9 +72,7 @@
 					<th>Label</th>
 					<th>Length</th>
 					<th>BPM</th>
-					<th>Key (Camelot)</th>
-					<th>Key (OK)</th>
-					<th>Key (Note)</th>
+					<th>Key (<?php echo h($keyDisplay); ?>)</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -71,11 +87,9 @@
 							echo $this->Track->displayBPM($track['bpm_difference']);
 						}
 						?></td>
-					<td><?php echo isset($track['KeyStart']['camelot']) ? h($track['KeyStart']['camelot']) : "";
+					<td><?php echo isset($track['KeyStart'][$keyPreference]) ? h($track['KeyStart'][$keyPreference]) : "";
 							if (isset($setlist['Setlist']['master_bpm']) && isset($track['key_start_modified'])) {
-								echo $this->Track->displayKey($track['bpm_difference'], $track['key_start_modified']['Key']['camelot']); } ?></td>
-					<td><?php echo isset($track['KeyStart']['openkey']) ? h($track['KeyStart']['openkey']) : ""; ?></td>
-					<td><?php echo isset($track['KeyStart']['notation']) ? h($track['KeyStart']['notation']) . " " . h($track['KeyStart']['notation_enharmonic']) : ""; ?></td>
+								echo $this->Track->displayKey($track['bpm_difference'], $track['key_start_modified']['Key'][$keyPreference]); } ?></td>
 				</tr>
 		<?php endforeach; ?>
 			</tbody>
