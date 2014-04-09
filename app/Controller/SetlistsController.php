@@ -65,7 +65,7 @@ class SetlistsController extends AppController {
 			$this->Setlist->create();
 			
 			if (isset($this->request->data['Setlist']['key_preference'])) {
-				$this->_setKeyPreference($this->request->data['Setlist']['key_preference']);
+				$this->saveKeyPreference($this->request->data['Setlist']['key_preference']);
 			}
 			
 			if ($strippedRequestData = $this->_stripBlankPostData($this->request->data)) {
@@ -89,7 +89,6 @@ class SetlistsController extends AppController {
 				$this->Session->setFlash("Please enter at least two tracks before saving", 'flash_danger_dismissable');
 				usort($this->request->data['Track'], array($this, "sortOrder"));
 			}
-			
 		}
 		
 		$setlist['Setlist']['key_preference'] = $this->_getKeyPreference();
@@ -97,6 +96,10 @@ class SetlistsController extends AppController {
         
 		$keys = $this->Key->find('all');
 		$this->set('keys', $keys);
+		
+		if (!$this->request->data) {
+	        $this->request->data = $setlist;
+	    }
 	}
     
 	public function edit($urlHash = null, $privateKey = null) {	// Edits an existing setlist
@@ -133,7 +136,7 @@ class SetlistsController extends AppController {
 				$this->Setlist->id = $decryptedID;
 				
 				if (isset($this->request->data['Setlist']['key_preference'])) {
-					$this->_setKeyPreference($this->request->data['Setlist']['key_preference']);
+					$this->saveKeyPreference($this->request->data['Setlist']['key_preference']);
 				}
 				
 				if ($this->Setlist->saveAssociated($strippedRequestData)) {
@@ -242,6 +245,27 @@ class SetlistsController extends AppController {
 		}
 	}
 	
+	public function saveKeyPreference($newKey) {	// Saves the new key preference via AJAX
+		if ($this->request->is('ajax')) {
+			$this->autoRender = false;
+		}
+		
+		if ($this->request->is('get')) {
+			throw new MethodNotAllowedException();
+		}
+		
+		switch($newKey) {
+			case 'c':
+			case 'o':
+			case 'n':
+				$this->_setKeyPreference($newKey);
+				break;
+			default:
+				throw new ForbiddenException(__('Invalid key preference'));
+				break;
+		}
+	}
+	
 	protected function _stripBlankPostData($data) {	// Ensures only form data with rows that have a title filled in are passed on to be saved
 		$strippedData['Setlist'] = $data['Setlist'];
 		$numberTracks = 0;
@@ -270,13 +294,7 @@ class SetlistsController extends AppController {
 	}
 	
 	protected function _setKeyPreference($key) {
-		switch($key) {
-			case 'c':
-			case 'o':
-			case 'n':
-				$this->Cookie->write('key_preference', $key);
-				break;
-		}
+		$this->Cookie->write('key_preference', $key);
 	}
 	
 	protected function _getKeyPreference() {
@@ -294,7 +312,7 @@ class SetlistsController extends AppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 		
-		$this->Security->unlockedActions = array('deletetrack');
+		$this->Security->unlockedActions = array('deletetrack', 'savekeypreference');
 		$this->Security->unlockedFields = array('Track.id', 'Track.setlist_order', 'Track.artist', 'Track.title', 'Track.label', 'Track.length', 'Track.bpm_start', 'Track.key_start');
 		$this->Security->blackHoleCallback = 'blackhole';
 		$this->Security->csrfUseOnce = false;
@@ -302,8 +320,8 @@ class SetlistsController extends AppController {
 		$this->Cookie->name = 'crater_user_preferences';
 		$this->Cookie->time = 3156000;  // 1 year
 		$this->Cookie->path = '/';
-		$this->Cookie->domain = 'crater.sblorgh.org';
-//		$this->Cookie->domain = 'crater.dev';	// Testing purposes only
+//		$this->Cookie->domain = 'crater.sblorgh.org';
+		$this->Cookie->domain = 'crater.dev';	// Testing purposes only
 		$this->Cookie->secure = false;
 		$this->Cookie->key = Configure::read('Security.salt');
 		$this->Cookie->httpOnly = false;
@@ -312,6 +330,7 @@ class SetlistsController extends AppController {
 	
 	public function blackhole($type) {
 		$this->Session->setFlash('Your request was ignored by the server for this reason: ' . h($type), 'flash_danger_dismissable');
-		return $this->redirect(array('action' => 'index'));
+		throw new ForbiddenException(__('Your request was ignored by the server for this reason: ' . h($type)));
+	//	return $this->redirect(array('action' => 'index'));
 	}
 }

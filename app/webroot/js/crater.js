@@ -132,3 +132,32 @@ function sortableHelper(e, ui) {
     });
     return ui;
 }
+
+function updateKeyPreference() {
+	var newKey = $(this).val();
+	
+	ajaxSaveKeyPreference(newKey);
+}
+
+function ajaxSaveKeyPreference(newKey) {
+	$.ajax({
+		type: "POST",
+		url: "/setlists/savekeypreference/" + newKey,	// TODO: This probably belongs in KeyController
+		success: refreshKeyDisplay(newKey)
+		})
+		.fail(function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == "Forbidden") {
+				alert("Invalid key preference")
+			} else {
+				alert("Sorry, something went wrong and your key preference wasn't saved: " + errorThrown);	
+			}
+		});
+}
+
+function refreshKeyDisplay(newKey) {
+	$('#editForm').find('[id$="KeyStart"]').each(function() {
+		$(this).find('[data-' + newKey + ']').each(function() {
+			$(this).text($(this).data(newKey));
+		});
+	});
+}

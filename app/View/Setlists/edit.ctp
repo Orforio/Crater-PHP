@@ -34,7 +34,7 @@ switch ($setlist['Setlist']['key_preference']) {
 };
 
 foreach ($keys as $key) {
-	$keyOptions[$key['Key']['id']] = $key['Key'][$keyPreference];
+	$keyOptions[$key['Key']['id']] = array('name' => $key['Key'][$keyPreference], 'value' => $key['Key']['id'], 'data-c' => $key['Key']['camelot'], 'data-o' => $key['Key']['openkey'], 'data-n' => $key['Key']['notation']);
 }
 
 echo $this->Form->input('Setlist.id', array('type' => 'hidden'));
@@ -124,6 +124,8 @@ $(document).ready(function () {
 	
 	$('#editForm').on('click', '.addRowButton', addTrackRow);
 	$('#editForm').on('click', '.removeRowButton', removeTrack);
+	
+	$('#SetlistKeyPreference').change(updateKeyPreference);
 });
 //]]>
 </script>
