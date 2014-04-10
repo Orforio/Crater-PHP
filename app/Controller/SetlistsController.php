@@ -329,8 +329,8 @@ class SetlistsController extends AppController {
 		$this->Cookie->name = 'crater_user_preferences';
 		$this->Cookie->time = 3156000;  // 1 year
 		$this->Cookie->path = '/';
-//		$this->Cookie->domain = 'crater.sblorgh.org';
-		$this->Cookie->domain = 'crater.dev';	// Testing purposes only
+		$this->Cookie->domain = 'crater.sblorgh.org';
+//		$this->Cookie->domain = 'crater.dev';	// Testing purposes only
 		$this->Cookie->secure = false;
 		$this->Cookie->key = Configure::read('Security.salt');
 		$this->Cookie->httpOnly = false;
