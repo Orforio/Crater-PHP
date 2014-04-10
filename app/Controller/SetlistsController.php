@@ -26,6 +26,12 @@ class SetlistsController extends AppController {
 		}
 
 		$id = $this->Urlhash->decrypt($urlHash);
+		
+		if ($this->request->is('post')) {
+			if (isset($this->request->data['Setlist']['key_preference'])) {
+				$this->saveKeyPreference($this->request->data['Setlist']['key_preference']);
+			}
+		}
 
 		$setlist = $this->Setlist->find('first', array(
 			'conditions' => array(
@@ -55,9 +61,12 @@ class SetlistsController extends AppController {
 				}
 			}
 		}
-	//	debug($setlist);
 		$setlist['Setlist']['key_preference'] = $this->_getKeyPreference();
 		$this->set('setlist', $setlist);
+		
+		if (!$this->request->data) {
+	        $this->request->data = $setlist;
+	    }
 	}
 
 	public function add() {	// Adds a new setlist
@@ -312,7 +321,7 @@ class SetlistsController extends AppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 		
-		$this->Security->unlockedActions = array('deletetrack', 'savekeypreference');
+		$this->Security->unlockedActions = array('view', 'deletetrack', 'savekeypreference');
 		$this->Security->unlockedFields = array('Track.id', 'Track.setlist_order', 'Track.artist', 'Track.title', 'Track.label', 'Track.length', 'Track.bpm_start', 'Track.key_start');
 		$this->Security->blackHoleCallback = 'blackhole';
 		$this->Security->csrfUseOnce = false;

@@ -1,5 +1,5 @@
 <?php
-$keyOptions = array();
+$keyPreferenceOptions = array('c' => 'Camelot', 'o' => 'Open Key', 'n' => 'Notation');
 switch ($setlist['Setlist']['key_preference']) {
 	case 'o':
 		$keyPreference = 'openkey';
@@ -48,14 +48,14 @@ switch ($setlist['Setlist']['key_preference']) {
 		<div class="alert alert-info">
 			<p class="lead">Available actions</p>
 			<div class="row">
-			<?php echo $this->Form->create(false, array('type' => 'get', 'url' => array('action' => 'edit', $setlist['Setlist']['urlhash']))); ?>
+			<?php echo $this->Form->create(false, array('type' => 'get', 'url' => array('action' => 'edit', $setlist['Setlist']['urlhash']), 'id' => 'editKeyForm')); ?>
 				<div class="col-md-8">
 					<?php echo $this->Form->input('editkey', array('label' => false, 'placeholder' => 'Edit Key', 'class' => 'form-control')); ?>
 				</div>
 				<div class="col-md-4">
 					<?php echo $this->Form->submit('Edit', array('class' => 'btn btn-primary', 'div' => false)); ?>
 				</div>
-				<?php echo $this->Form->end(); ?>
+			<?php echo $this->Form->end(); ?>
 			</div>
 			<p class="help-popover" data-placement="bottom" data-title="Help" data-content="An Edit Key is required to edit or delete this setlist"><a href="#">What's this?</a></p>
 		</div>
@@ -67,12 +67,14 @@ switch ($setlist['Setlist']['key_preference']) {
 		<table class="table table-striped table-bordered table-condensed">
 			<thead>
 				<tr>
+				<?php echo $this->Form->create('Setlist', array('type' => 'post')); ?>
 					<th>#</th>
 					<th>Artist - Title</th>
 					<th>Label</th>
 					<th>Length</th>
 					<th>BPM</th>
-					<th>Key (<?php echo h($keyDisplay); ?>)</th>
+					<th>Key <?php echo $this->Form->select('key_preference', $keyPreferenceOptions, array('empty' => false)); ?></th>
+				<?php echo $this->Form->end(); ?>
 				</tr>
 			</thead>
 			<tbody>
@@ -102,6 +104,10 @@ $(document).ready(function () {
 	$('.help-popover').on('click', function(e) {
 		e.preventDefault();
 	}).popover();
+	
+	$('#SetlistKeyPreference').change(function() {
+		$('#SetlistViewForm').submit();
+	});
 });
 //]]>
 </script>
